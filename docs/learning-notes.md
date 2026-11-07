@@ -29,4 +29,9 @@ history scan before any agent or new person gets access. Replace any secret firs
 rewriting history comes second. Moving a repo is harder when many people have
 clones and many systems connect to it.
 
+**Order when a secret leaks.** Replace the secret first, then clean the history.
+Nobody knows who already copied it, and replacing the secret makes every copy
+worthless. Deleting the file in a new commit does nothing, because the secret is
+still in history and still works. (I first answered "rewrite history first".)
+
 **Still to practise.** Finding reach beyond files: logins and admin rights.
