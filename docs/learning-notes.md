@@ -75,3 +75,43 @@ Important rules get a reminder in the root `AGENTS.md` and a lock elsewhere.
 
 **Still to practise.** Re-run the experiment when Claude Code updates, and once
 with a stronger model.
+
+## M2: Kit distribution
+
+**Concept.** The kit is copied into a project's `.factory/` folder with a
+`VERSION` file and a checksum for every file. The kit owns `.factory/`; the
+project owns everything else. Checksums detect local edits; they don't prevent them.
+
+**Why it matters.** Without a version, nobody knows which rules a project runs.
+Without checksums, an update could silently overwrite someone's fix.
+
+**.NET comparison.** Like a NuGet package: `VERSION` is the package version, and
+`checksums.txt` is like the content hash in `packages.lock.json`.
+
+**What the install script does.** Refuse if the project has uncommitted changes.
+Stop and change nothing if `.factory/` was edited, or has a missing or extra file.
+Build the new folder next to the old one, then swap. Never commit: a human
+reviews and commits.
+
+**First real install.** Brain Gym got kit v0.1.0 through PR #1 (12 November 2026).
+
+**Mistakes we made.**
+
+- I predicted a second install run would say "already up to date". It refused,
+  because the uncommitted `.factory/` counts as unreviewed work.
+- All 12 tests passed on the first run. I broke the script on purpose (mutation
+  testing) and 3 tests failed, which proved they can catch a bug.
+- PR #1 showed "mergeable" with no checks, because the Vercel app could not see
+  the new repo. A missing check looks the same as a passing one. Fixing access
+  did not help until a new push, because GitHub does not replay old events.
+
+**On a legacy project.** It may already have a folder named `.factory/` or its
+own copies of similar scripts. The script leaves a `.factory/` without
+`checksums.txt` alone, so someone must move it first.
+
+**Still to practise.** Making a check required, so a missing check blocks a merge (M6).
+
+**Pattern from M1 and M2.** "Could not check" must never look like "checked and
+OK": exit code 2 for a missing folder, a refused install on unreviewed work, a PR
+with no checks, a lost executable bit. Fix path for a kit file: change it in the
+factory, bump `VERSION`, undo the local edit, reinstall.

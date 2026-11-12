@@ -11,8 +11,8 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 1 (instruction loading) done. Nothing here is ready to
-install in a project yet.
+Milestone 2 (kit distribution) done. The kit installs with scripts/install.sh, but
+its checks do not run automatically yet.
 
 ## Read next
 
