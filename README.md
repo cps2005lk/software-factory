@@ -11,7 +11,7 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 0 (harness engineering and blast radius). Nothing here is ready to
+Milestone 1 (instruction loading) done. Nothing here is ready to
 install in a project yet.
 
 ## Read next
