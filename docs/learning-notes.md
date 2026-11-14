@@ -115,3 +115,40 @@ own copies of similar scripts. The script leaves a `.factory/` without
 OK": exit code 2 for a missing folder, a refused install on unreviewed work, a PR
 with no checks, a lost executable bit. Fix path for a kit file: change it in the
 factory, bump `VERSION`, undo the local edit, reinstall.
+
+## M3: Discovery and baselines
+
+**Concept.** Discovery is the read-only walk-through before any change: how the
+project builds, where it goes live, where its risky parts are. A baseline is
+today's state, measured: do the checks pass, and what does a normal task cost
+without the factory? Every finding is marked confirmed or `> Unverified:`.
+
+**Why it matters.** Without a "before" number, we can never show the factory
+helps; it would only feel like it does. Without discovery, an agent changes a
+load-bearing wall it didn't know was there.
+
+**.NET comparison.** Joining a legacy team: first run `dotnet build` and
+`dotnet test` and write down "3 tests already fail, build takes 2 minutes", or
+you get blamed for old failures. Measure performance before optimizing.
+
+**What the baseline showed** (details in `docs/baselines/m3-plain-claude.md`).
+Plain Claude fixed a real bug in 26 seconds with 0 corrections. All 5 checks
+passed, but it wrote no test and didn't say why. Fast and cheap, but unproven.
+The factory must make the agent prove its work without costing much more.
+
+**Mistakes we made.**
+
+- My hint made you predict a `format:check` failure. Prettier skips files it
+  doesn't know, so it passed. A hint biases a prediction; measure, don't guess.
+- We forgot `/usage` before the run. A step that depends on someone
+  remembering will sometimes be missed. M7 adds an automatic usage log.
+- The session file stores each reply several times. Summing tokens without
+  `unique_by(.id)` would count some replies twice.
+- Green checks looked like success, but none of them tested the bug.
+
+**On a legacy project.** Expect logic outside the code (stored procedures, SQL
+jobs, config transforms) and parts that only run on Windows. The list of open
+questions for a human is as valuable as the list of facts.
+
+**Still to practise.** Writing the failing test first (M5), and repeating the
+same task with the factory (M8).

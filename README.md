@@ -11,10 +11,13 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 2 (kit distribution) done. The kit installs with scripts/install.sh, but
-its checks do not run automatically yet.
+Milestone 3 (discovery and baseline) done. The onboarding playbook has its
+discovery step, and a plain-Claude baseline is recorded for later comparison.
+The kit's checks do not run automatically yet.
 
 ## Read next
 
 - [What an agent can reach](docs/harness-map.md)
 - [Learning notes](docs/learning-notes.md)
+- [Onboarding playbook](kit/playbooks/onboarding.md)
+- [Baseline: plain Claude](docs/baselines/m3-plain-claude.md)
