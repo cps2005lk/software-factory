@@ -152,3 +152,47 @@ questions for a human is as valuable as the list of facts.
 
 **Still to practise.** Writing the failing test first (M5), and repeating the
 same task with the factory (M8).
+
+## M4: The brain
+
+**Concept.** The brain is a project's knowledge, written so any agent or person
+can work without the original developer. Two layers: `AGENTS.md` is the pocket
+card (under 100 lines: commands, hard rules, surprises), loaded every session;
+`docs/brain/` is the shelf, read only when a task needs it. One fact lives in
+one place, and every guess is marked `> Unverified:`.
+
+**Why it matters.** Every always-loaded line costs tokens on every task, and
+general overviews don't help agents. A wrong fact is worse than a missing one.
+In Brain Gym, 5 of the 6 wrong facts were in copies: a copy is a fact nobody
+updates.
+
+**.NET comparison.** `AGENTS.md` is like `Directory.Build.props`: small and
+applied everywhere. `docs/brain/` is the wiki and XML docs. A hand-run migration
+is like EF Core without `__EFMigrationsHistory`: nobody can tell what is applied.
+
+**Sorting rule.** Ask two questions. Would an agent get it wrong without being
+told? Put it in `AGENTS.md`. Does the code already say it reliably? Don't write
+it. The rule goes in `AGENTS.md`; the reason goes in the brain.
+
+**Mistakes we made.**
+
+- You guessed architecture docs were missing; they were in the README. Look
+  everywhere before calling something missing.
+- I put "0001–0006 applied" in two files while writing the brain. I broke our
+  own rule within an hour; the freshness check in M6–M7 must catch this.
+- A template named `AGENTS.md` would load as a real folder instruction. It is
+  `AGENTS.md.template`.
+- Nobody knew if migration 0006 was applied. Generated types were evidence;
+  a read-only query was proof.
+- I thought a personal `~/.claude/CLAUDE.md` might switch off `AGENTS.md`.
+  Tested on Claude Code v2.1.325 (2 of 2): both load. Re-test after updates.
+- In the quiz, things that sounded important went into the brain even when
+  the code already said them.
+
+**On a legacy project.** The code tells you *what*; only a human knows *why*.
+Write the what as fact, the why as `> Unverified:`, and keep a list of open
+questions. Never invent a reason that sounds right. Check whether migrations
+are tracked, and look for logic outside the repo.
+
+**Still to practise.** A check that keeps the brain fresh (M6–M7), and the
+personal files for Codex and Copilot if we add those tools.

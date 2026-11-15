@@ -11,9 +11,8 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 3 (discovery and baseline) done. The onboarding playbook has its
-discovery step, and a plain-Claude baseline is recorded for later comparison.
-The kit's checks do not run automatically yet.
+Milestone 4 (the brain) done. The kit has brain templates and the playbook's
+discovery and brain steps. The kit's checks do not run automatically yet.
 
 ## Read next
 
