@@ -196,3 +196,49 @@ are tracked, and look for logic outside the repo.
 
 **Still to practise.** A check that keeps the brain fresh (M6–M7), and the
 personal files for Codex and Copilot if we add those tools.
+
+## M5: Safety nets
+
+**Concept.** Before an agent changes an area, that area needs tests that would
+notice a break. A unit test says what the code *should* do; a characterization
+test records what it *does* today, right or wrong. A bug fix starts with a
+failing test. Coverage shows what ran, not what was checked; a mutation check
+(break the code on purpose) shows whether tests notice.
+
+**Why it matters.** Agents change code faster than a human can read it. In M3,
+plain Claude fixed a bug with every check green and no proof. In M5 the same
+fix got a test that was red on the old code and green on the new.
+
+**.NET comparison.** Characterization tests are Verify snapshots
+(`.received.` → `.verified.`). Coverage is coverlet. Mutation testing is
+Stryker.NET. Fake time is `FakeTimeProvider`.
+
+**What each layer found in Brain Gym.**
+
+| Layer | Found |
+| --- | --- |
+| Failing test first | The midnight bug is real, and the fix works |
+| Characterization | `removeParent` deletes by user id, safe only while one family per person |
+| Mutation check | One parent-screen case covered only by accident |
+| Browser agent | Stop throws the game away, and its time isn't counted (written down nowhere) |
+
+**Mistakes we made.**
+
+- My `sed` rename used `\b`, which macOS `sed` doesn't support. Half the names
+  changed, and it still compiled. Read the diff; use `perl` for portable edits.
+- One big jump of the fake clock ran only the first countdown tick. Move fake
+  time in steps, the way real time moves.
+- I almost let a test pass because of a crash in another test. A test must
+  fail for the *right reason*.
+- npm blocked an install script (`fsevents`) until approved: a lock, not a
+  request. We didn't approve it, because nothing needed it.
+- The dev server would have used the live database. We blanked the Supabase
+  settings so the browser agent could only touch a device-only copy.
+
+**On a legacy project.** Characterize before changing anything, starting
+where risk × churn × missing coverage is highest. Expect no seams: test from
+the outside first, then add the smallest seam. Check tool licences (Verify
+now has a maintenance fee for companies).
+
+**Still to practise.** Browser tests that run without me watching (Playwright,
+maybe in CI), and a mutation tool instead of breaking code by hand.

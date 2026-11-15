@@ -11,8 +11,8 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 4 (the brain) done. The kit has brain templates and the playbook's
-discovery and brain steps. The kit's checks do not run automatically yet.
+Milestone 5 (safety net) done. The playbook covers discovery, the brain and
+the safety net. The kit's checks do not run automatically yet.
 
 ## Read next
 
