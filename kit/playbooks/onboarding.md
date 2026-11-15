@@ -3,8 +3,8 @@
 How to bring an existing project into the factory. Follow the steps in order.
 Each step lists what to find, why, and what it produces.
 
-Steps: 1. Discovery · 2. Brain · 3. Safety net (M5) · 4. Guardrails (M6–M7)
-· 5. Trust ladder (M6) · 6. Onboarding report. Steps 1 and 2 are written so far.
+Steps: 1. Discovery · 2. Brain · 3. Safety net · 4. Guardrails (M6–M7)
+· 5. Trust ladder (M6) · 6. Onboarding report. Steps 1 to 3 are written so far.
 
 ## 1. Discovery
 
@@ -154,3 +154,89 @@ When code changes, update the matching brain file in the same pull request.
 
 - `AGENTS.md` and `docs/brain/`, filled in.
 - The gap list and open questions, in the onboarding report.
+
+## 3. Safety net
+
+**Goal:** before an agent changes an area, that area has tests that would
+notice if it broke. Agents change code faster than a human can read it.
+
+### Two kinds of test
+
+| | Unit test | Characterization test |
+| --- | --- | --- |
+| Says | The code *should* do X | The code *does* X today |
+| Written from | A spec or a rule | Running the code and recording the answer |
+| Fails when | The code is wrong | The behaviour changed, right or wrong |
+| Use for | New code, known rules, bug fixes | Code nobody fully remembers; legacy code |
+
+**A bug fix starts with a failing test.** Red on today's code proves the bug;
+green after the fix proves the fix. An agent that fixes without this has
+proven nothing, even if every check is green.
+
+### Steps
+
+1. **Measure coverage.** It shows which lines no test runs. It does not show
+   whether tests check the right thing. A coverage report only knows its own
+   test runner: SQL tests or end-to-end tests run elsewhere are invisible.
+2. **Choose where first:** risk × how often it changes × how uncovered it is.
+   Use evidence, not feeling:
+
+   ```sh
+   git log --since=1.year --name-only --format= -- src | grep -v test \
+     | sort | uniq -c | sort -rn | head
+   ```
+
+   High risk: money, personal or children's data, access rights, time and
+   dates. Low risk: code that only draws what well-tested logic decides.
+3. **Write characterization tests.**
+   - Fake the edges (database, network, clock) and record every call.
+   - Let the code fill the snapshots, then **read every one**. A snapshot
+     nobody read only proves the code does *something*.
+   - Snapshot what a user or caller sees (visible text, return values), not
+     internals like HTML or CSS classes, so harmless refactors don't fail.
+   - **Don't fix odd behaviour while recording.** Write it down: a comment
+     on the test, and a line in `docs/brain/known-issues.md`.
+4. **Prove the tests can fail (mutation check).** Break the code on purpose:
+   flip a condition, change a sort order. At least one test must fail *for
+   that reason*, not by accident. If none fails, the net has a hole.
+5. **Record the result** in the onboarding report: coverage before and after,
+   areas still uncovered, and odd behaviour found.
+
+**Trust rule (used by the trust ladder, M6):** an agent may change an area only
+when that area has tests that pass a mutation check.
+
+### Legacy .NET track
+
+Michael Feathers defines legacy code as code without tests. The order is
+always: **characterize, then change.**
+
+- **Coverage:** [coverlet](https://github.com/coverlet-coverage/coverlet).
+  `dotnet test --collect:"XPlat Code Coverage"` writes a
+  `coverage.cobertura.xml`. The page says it needs the .NET 8 SDK and, on .NET
+  10 with Microsoft Testing Platform, the `coverlet.MTP` package instead.
+  > Unverified: whether it works on old-style .NET Framework projects. Its page
+  > says both "works with .NET Framework on Windows" and "only supports modern
+  > .NET SDK-style projects". Try it on the real project.
+- **Characterization (snapshots):** [Verify](https://github.com/VerifyTests/Verify).
+  Writes a `.received.` file; you accept it as `.verified.` and commit it.
+  Supports NUnit, xUnit v3, MSTest and .NET Framework 4.6.2–4.8. From
+  1 September 2026, new versions carry a maintenance fee for
+  revenue-generating organisations: check before adopting.
+- **Mutation testing:** [Stryker.NET](https://stryker-mutator.io/docs/stryker-net/introduction/).
+  `dotnet tool install -g dotnet-stryker`, then `dotnet stryker` in the test
+  project. Supports .NET Framework and modern .NET; needs the .NET 10 runtime
+  to run the tool.
+- **Time:** replace `DateTime.Now` with
+  [`TimeProvider`](https://learn.microsoft.com/en-us/dotnet/standard/datetime/timeprovider-overview)
+  (built into .NET 8+, NuGet `Microsoft.Bcl.TimeProvider` for .NET Framework
+  4.6.2+). Tests use `FakeTimeProvider` from
+  `Microsoft.Extensions.TimeProvider.Testing`.
+- **Logic in the database:** [tSQLt](https://tsqlt.org/) runs T-SQL tests
+  inside SQL Server, each in a transaction, and can fake tables and spy on
+  stored procedures.
+- **No seams?** Code that calls `new SqlConnection` or `DateTime.Now` deep
+  inside can't be faked. Characterize from the outside first (HTTP responses,
+  database rows after a call), then add a seam (an interface or a parameter)
+  as the first, smallest change.
+
+Tool facts checked on 2026-11-16 against the linked pages.
