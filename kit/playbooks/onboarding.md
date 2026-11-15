@@ -3,8 +3,8 @@
 How to bring an existing project into the factory. Follow the steps in order.
 Each step lists what to find, why, and what it produces.
 
-Steps: 1. Discovery · 2. Brain (M4) · 3. Safety net (M5) · 4. Guardrails (M6–M7)
-· 5. Trust ladder (M6) · 6. Onboarding report. Only step 1 is written so far.
+Steps: 1. Discovery · 2. Brain · 3. Safety net (M5) · 4. Guardrails (M6–M7)
+· 5. Trust ladder (M6) · 6. Onboarding report. Steps 1 and 2 are written so far.
 
 ## 1. Discovery
 
@@ -64,3 +64,93 @@ finding, marked confirmed or unverified, plus the health baseline table. List
 risky areas and open questions for a human.
 
 **Next:** step 2, the brain, turns these findings into project knowledge.
+
+## 2. Brain
+
+**Goal:** turn what discovery found into project knowledge that any agent or
+person can use without the original developer in the room.
+
+**Templates:** copy `.factory/templates/brain/` into the project. Rename
+`AGENTS.md.template` to `AGENTS.md`.
+
+### Rules
+
+- **One fact, one place.** A copy is a fact nobody updates. Link to the fact
+  instead of repeating it.
+- **`AGENTS.md` is a pocket card.** Under 100 lines. Only commands, hard rules
+  and surprises: things an agent would get wrong without being told. General
+  overviews cost tokens on every task and don't help.
+- **A wrong fact is worse than a missing one.** Mark every guess.
+- **Personal preferences are not project knowledge.** How one person likes to
+  work goes in their own personal instructions, not in the repo.
+- **Status is not knowledge.** Milestone lists and "where we are now" go stale
+  fast; git history already records them.
+
+### Existing docs: move or map?
+
+- **Move into `docs/brain/` (default).** Same paths in every project, so
+  agents and checks always know where to look. Use `git mv` to keep history.
+- **Map in place.** Keep the docs where they are and write only
+  `docs/brain/README.md` as a map. Use this when the docs are big, owned by
+  other teams, or live in a wiki.
+
+### Gap analysis
+
+Compare every existing doc with the brain structure. Sort each finding:
+
+| Kind | Question | Example |
+| --- | --- | --- |
+| Missing | Which brain file would be empty? | No known issues written anywhere |
+| Wrong or out of date | Does the code agree with the doc? | Doc lists a migration as not applied |
+| Duplicated | Is the same fact in two places? | A decisions table copied into the instructions file |
+| Not brain | Is it personal, status or history? | A milestone table, all rows "done" |
+
+Then check: do the copies hold most of the wrong facts? They usually do.
+
+### Confirmed or unverified
+
+A fact is **confirmed** when someone ran it, read the code that does it, or
+checked the live system. Write the date for live-system facts:
+`(checked 2026-11-15)`. Everything else is a guess:
+
+```markdown
+> Unverified: the nightly job deletes sessions older than 90 days.
+> Seen in `CleanupJob.cs`; not checked against the live schedule.
+```
+
+Look for **evidence that is cheap to check** before asking a human. For
+example, types generated from a live database show what that database had
+when they were generated. Evidence is not proof; ask a human to confirm with a
+read-only check.
+
+### What code can tell you, and what only a human knows
+
+| An agent can infer from code and git | Only a human can confirm |
+| --- | --- |
+| What the code does today | Whether it is *meant* to do that |
+| Structure, data model, dependencies | Why it was built this way |
+| Which files change often and with which | What runs in production, and its config |
+| Commit messages and linked tickets | Business rules nobody wrote down |
+| Tests, and what they cover | What users actually rely on, including bugs |
+
+For a legacy app where nobody remembers why: write what the code does as
+confirmed, write the "why" as `> Unverified:`, and keep a list of open
+questions for a human. Never invent a reason that sounds right.
+
+### Legacy .NET: also check
+
+- Settings that exist only after a `web.config` transform, or only on the server.
+- Logic in stored procedures, triggers and SQL Agent jobs. Document it in
+  `architecture.md`, because agents can't see it in the repo.
+- Whether migrations are tracked (`__EFMigrationsHistory`) or run by hand.
+  If by hand, nobody can know which are applied; record it as a known issue.
+
+### Keeping it fresh
+
+When code changes, update the matching brain file in the same pull request.
+(A check that enforces this comes in M6–M7.)
+
+### Output
+
+- `AGENTS.md` and `docs/brain/`, filled in.
+- The gap list and open questions, in the onboarding report.
