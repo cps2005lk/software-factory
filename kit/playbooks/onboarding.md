@@ -4,7 +4,7 @@ How to bring an existing project into the factory. Follow the steps in order.
 Each step lists what to find, why, and what it produces.
 
 Steps: 1. Discovery · 2. Brain · 3. Safety net · 4. Guardrails (M6–M7)
-· 5. Trust ladder (M6) · 6. Onboarding report. Steps 1 to 3 are written so far.
+· 5. Trust ladder (M6) · 6. Onboarding report. Steps 1 to 4 are written so far.
 
 ## 1. Discovery
 
@@ -240,3 +240,128 @@ always: **characterize, then change.**
   as the first, smallest change.
 
 Tool facts checked on 2026-11-16 against the linked pages.
+
+## 4. Guardrails
+
+**Goal:** the rules that matter most are *enforced*, not only written. A rule
+in `AGENTS.md` is a request; an agent can forget it or misread it. A check
+that refuses can't be forgotten.
+
+### Three levels
+
+| | Written rule | Local git hook | Server rule |
+| --- | --- | --- | --- |
+| Where | `AGENTS.md` | `.git/hooks/` on each machine | GitHub branch protection + CI |
+| Stops | Nothing; it asks | Accidents, before code leaves the machine | Decisions, for everyone |
+| Skipped by | Forgetting | `--no-verify`, or a clone without hooks | An admin turning it off |
+| Feedback | None | Seconds | Minutes |
+
+Use all three: the written rule explains, the hook gives fast feedback, the
+server rule is the lock nobody gets past.
+
+### Steps
+
+1. **Choose what to enforce.** For each rule in `AGENTS.md`, ask: how bad is
+   it if this is broken once? Enforce the ones with a big blast radius first:
+   secrets, `main`, `CLAUDE.md`. Leave matters of taste as written rules.
+2. **Write `scripts/check.sh`** in the project: build, tests, lint, format,
+   and the kit's checks. **The kit owns *when* checks run (the hooks); the
+   project owns *what* runs (this file).** One file means the hook, CI and a
+   human all run exactly the same checks.
+3. **Turn on the local hooks**, once per clone:
+   `.factory/guardrails/setup-hooks.sh`. Git never copies hooks into a clone,
+   so a clone can't run a stranger's code; the price is that every clone
+   must turn them on. Put the command in `AGENTS.md`.
+   - The setup installs a small *launcher* in `.git/hooks/`. On a branch that
+     doesn't have the kit, the launcher **blocks** with a message. Pointing
+     `core.hooksPath` at a folder in the working tree instead fails
+     *silently*: on a branch without that folder git runs nothing and says
+     nothing.
+4. **Keep the project's tools out of `.factory/`.** A formatter that rewrites
+   kit files breaks the checksums. Example: add `.factory` to
+   `.prettierignore`.
+5. **Add CI** that runs `scripts/check.sh` on every pull request and on
+   `main`. Minimal GitHub Actions file:
+
+   ```yaml
+   name: check
+   on:
+     pull_request:
+     push:
+       branches: [main]
+   permissions:
+     contents: read          # read-only token
+   jobs:
+     check:                  # this name becomes the required check
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@<full commit SHA> # vX.Y.Z
+         - run: scripts/check.sh
+   ```
+
+   - **No secrets in CI** unless a check truly needs one. The smallest world
+     again: an app with no database settings should still build and test.
+   - **Pin actions to a full commit SHA**, with the version in a comment. A
+     tag can be moved to other code later; a SHA can't.
+   - **Read the first log.** Green is not proof: confirm the tests actually
+     ran (for example "232 tests passed"), not zero of them.
+6. **Turn on branch protection for `main`.** This changes repo settings, so
+   the owner decides. Settings that worked for a one-person repo:
+   - require a pull request (0 approvals: GitHub doesn't count your approval
+     of your own PR);
+   - include administrators;
+   - block force pushes and deletion;
+   - require the CI check, tied to the app that runs it (GitHub Actions), so
+     a status posted by hand doesn't count; branch must be up to date.
+   - Watch out: a required check that nothing runs makes every PR wait
+     forever. Add the CI first, let it run once, then require it.
+7. **Prove every lock, both ways.** A check that blocks everything is as
+   useless as one that blocks nothing. For each one: show it **blocks** the
+   bad case and **allows** the good case. The server lock: from a fresh clone
+   (no hooks), push a commit straight to `main`. It must be refused.
+
+### Rules for agents
+
+- **Never use `--no-verify`.** A blocked hook is a stop sign: report what it
+  said and fix the cause. Skipping a hook is a human decision, made in a
+  terminal, never by an agent.
+- **Never change branch protection or CI settings** without asking.
+- **Could not check is not OK.** A missing script, folder or tool must fail,
+  never pass quietly.
+
+### Known gaps
+
+- `--no-verify` skips the local hooks. The server rule catches it at the PR.
+- An admin can switch the server rule off. That is on purpose (a broken CI
+  must not lock everyone out), but it means the owner holds the last key.
+- Git hooks only see git. Commands an agent runs (`gh`, deleting files,
+  calling an API) need agent hooks: M7.
+
+### Legacy .NET track
+
+- **Hooks and `check.sh` don't care about the language.** `scripts/check.sh`
+  runs `dotnet build` and `dotnet test` instead of npm.
+  > Unverified: how the bash hooks run on Windows. Git for Windows ships its
+  > own bash, which should run them. Try it on a Windows clone.
+- **Azure DevOps** has the same server lock as
+  [branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies):
+  **Build validation** runs a pipeline before a PR can complete. Under
+  "Require a minimum number of reviewers", the option "Allow requestors to
+  approve their own changes" decides whether your own vote counts. People
+  with the "bypass policies" permissions skip everything: give it to as few
+  people as possible.
+
+### Output
+
+- `scripts/check.sh`, the hooks turned on, CI, branch protection.
+- In the onboarding report: which rules are enforced and where, and the proof
+  that each lock blocks and allows.
+
+Sources:
+- GitHub, [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
+  and [Available rules for rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets),
+  checked 2026-11-21.
+- Microsoft Learn, [Branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies),
+  checked 2026-11-21.
+- Hooks not cloned, silent `core.hooksPath` pass, server refusal: tested with
+  git 2.52.0 and GitHub, 2026-11-20 and 2026-11-21.
