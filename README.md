@@ -17,6 +17,7 @@ the safety net. The kit's checks do not run automatically yet.
 ## Read next
 
 - [What an agent can reach](docs/harness-map.md)
+- [Concept index](docs/concepts.md): every concept in one line
 - [Learning notes](docs/learning-notes.md)
 - [Onboarding playbook](kit/playbooks/onboarding.md)
 - [Baseline: plain Claude](docs/baselines/m3-plain-claude.md)
