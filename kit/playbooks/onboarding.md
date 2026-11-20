@@ -4,7 +4,7 @@ How to bring an existing project into the factory. Follow the steps in order.
 Each step lists what to find, why, and what it produces.
 
 Steps: 1. Discovery · 2. Brain · 3. Safety net · 4. Guardrails (M6–M7)
-· 5. Trust ladder (M6) · 6. Onboarding report. Steps 1 to 4 are written so far.
+· 5. Trust ladder (M6) · 6. Onboarding report. Steps 1 to 5 are written so far.
 
 ## 1. Discovery
 
@@ -365,3 +365,62 @@ Sources:
   checked 2026-11-21.
 - Hooks not cloned, silent `core.hooksPath` pass, server refusal: tested with
   git 2.52.0 and GitHub, 2026-11-20 and 2026-11-21.
+
+## 5. Trust ladder
+
+**Goal:** an agent gets more freedom only after it has proven it can be
+trusted with less. Like a new driver: a learner's permit first, then driving
+alone, then the highway. Each step needs a test, and a bad mistake takes one
+away.
+
+### The rungs
+
+| Rung | The agent may | To climb to the next rung |
+| --- | --- | --- |
+| **1. Read-only** | Read code, run the build and tests, answer questions, write plans | Onboarding steps 1–4 are done (brain written, every lock proven), and a human checked the agent's findings and found them right |
+| **2. Small PRs** | Branch, commit, push, open a PR. Only in areas whose tests pass a mutation check (step 3). A bug fix starts with a failing test. One area and a small diff per PR. A human reads every line and merges | **5 PRs in a row** merged with no correction after review, CI green on the first push, and no attempt to get around a guardrail |
+| **3. Features** | A change across several files, from a spec a human approved first. The agent writes its own tests. The human reviews the spec and the final PR | Stays here while the same record holds |
+
+A possible rung 4, working unattended with a reviewer agent before the human,
+is not described yet (roles and fleet, M9–M11).
+
+### Trust is per area, not per agent
+
+One agent can be on rung 2 for well-tested logic and on rung 1 for screens
+with thin tests. An area with no mutation-checked tests can't go above
+rung 1, however good the agent's record is: nothing would notice a mistake.
+
+### Going down
+
+**One serious slip drops that area one rung**, until the cause is fixed with
+a new check or rule, not just a promise. Serious slips:
+
+- getting around a guardrail (for example `--no-verify`);
+- stating a guess as a confirmed fact;
+- touching an area or action the rung doesn't allow.
+
+A slip that was caught by a check is the check working, not a slip.
+
+### Always human, on every rung
+
+Merging, repo settings, deploying, the live database, secrets, installing
+software. A rung never includes these; to change this list, change this
+playbook.
+
+### Recording it
+
+Each project keeps its rungs in `docs/brain/trust.md` (template in
+`kit/templates/brain/docs/brain/trust.md`): one row per area, with the proof
+and the date. Count PRs and corrections from the PR history, not from memory.
+
+### Legacy .NET track
+
+The same ladder, in team terms: a new developer gets read access, then small
+reviewed PRs, then a feature. Legacy code usually starts with most areas on
+rung 1, because it has few tests; the safety net (step 3) is what lets an
+area climb.
+
+### Output
+
+- `docs/brain/trust.md` filled in: every area with its rung.
+- In the onboarding report: which areas start on which rung, and why.
