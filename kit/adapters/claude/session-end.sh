@@ -57,7 +57,7 @@ task="$(old task)"; corrections="$(old corrections)"
 mkdir -p "$root/docs/usage"
 cat >"$file" <<YML
 # Usage of one agent session. Filled by the factory's SessionEnd hook;
-# a human fills task and corrections.
+# a human fills task (in "quotes") and corrections (a number).
 session: $session
 project: $(basename "$root")
 branch: $(git -C "$root" branch --show-current)
