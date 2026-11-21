@@ -11,8 +11,9 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 5 (safety net) done. The playbook covers discovery, the brain and
-the safety net. The kit's checks do not run automatically yet.
+Milestone 6 (guardrails and trust ladder) done. The playbook covers discovery,
+the brain, the safety net, guardrails and the trust ladder. The kit's checks
+run as git hooks, and CI runs them on every pull request.
 
 ## Read next
 
