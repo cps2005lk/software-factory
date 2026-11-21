@@ -41,6 +41,7 @@ check "cache read tokens"                   "$f" tokens_cache_read 3500
 check "output tokens"                       "$f" tokens_output 15
 check "model: the one used most"            "$f" model claude-opus-5-5
 check "task left for a human"               "$f" task ""
+grep -q " $" "$f" && { echo "FAIL  no trailing spaces (Prettier would fail)"; fails=$((fails + 1)); } || echo "PASS  no trailing spaces (Prettier would fail)"
 
 # A human fills task and corrections; resuming the session must keep them.
 perl -pi -e 's/^task:.*/task: Fix the midnight bug/; s/^corrections:.*/corrections: 1/' "$f"
