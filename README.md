@@ -22,4 +22,5 @@ every pull request. Each agent session leaves a usage file.
 - [Concept index](docs/concepts.md): every concept in one line
 - [Learning notes](docs/learning-notes.md)
 - [Onboarding playbook](kit/playbooks/onboarding.md)
+- [Task loop playbook](kit/playbooks/task-loop.md): spec, plan, tasks, handoffs
 - [Baseline: plain Claude](docs/baselines/m3-plain-claude.md)
