@@ -315,3 +315,80 @@ few tests.
 **Still to practise.** Agent hooks that block `--no-verify` and risky `gh`
 commands (M7). Watching a PR with a failing check stay blocked: I can't show
 this as an agent without `--no-verify`, so it's a human exercise.
+
+## M7: Agent hooks, adapters and the usage log
+
+**Concept.** A git hook only sees git, and only at commit or push. An
+*agent hook* sees every action an agent is about to take. Claude Code's
+`PreToolUse` hook gets the command as JSON and answers: **block** (exit 2,
+with a reason the agent reads), **ask** (a permission prompt for the human),
+or no objection. Our check (`risky-command.sh`) knows nothing about Claude;
+a small *adapter* translates Claude's JSON into a command string and the
+check's answer back. A `SessionEnd` hook writes a *usage file* per session,
+and a *sync check* fails when the project's copy of the hook settings drifts
+from the kit.
+
+**Why it matters.** In M6 I used `--no-verify` and no written rule stopped
+me. Now the same command is refused before it runs. And the trust ladder's
+"5 PRs with no correction" now comes from records, not from memory.
+
+**.NET comparison.** An agent hook is ASP.NET middleware or an action
+filter: it runs before the action and can short-circuit it. The adapter is
+`ILogger` with a Serilog provider. The usage log is structured logging, one
+record per request. The sync check is like `dotnet restore --locked-mode`:
+CI fails when config no longer matches what it should be.
+
+**What each piece proved.**
+
+| Piece | Proof |
+| --- | --- |
+| Block | `git push --dry-run --no-verify` refused before it ran, here and in a Brain Gym session |
+| Ask | A dry-run force-push waited 2 h 13 min for a human yes (transcript timestamps) |
+| Usage log | A headless `claude -p` run wrote its file: `SessionEnd` runs for `-p` too (the docs don't say) |
+| Sync check | Deleting a hook from `.claude/settings.json` made `scripts/check.sh` exit 1 |
+| Every check | Mutation checks: bugs put back on purpose, each caught by a test |
+
+**Mistakes we made.**
+
+- **A Perl `$18`.** I meant "group 1, then 8"; Perl read group 18 (empty) and
+  deleted part of the playbook. Found by reading the diff.
+- **A bullet split in two.** My new `AGENTS.md` line went between a bullet
+  and its second line, so a git-hook sentence described the agent hook.
+  Found by reading the output. Lesson for both: read every scripted edit.
+- **A temporary file in `/tmp`** instead of the session's scratchpad.
+- **macOS bash 3.2** has no `declare -A`. CI (bash 5) would have passed
+  while the Mac failed. Run kit scripts on the Mac, not only in CI.
+- **A trailing space** after empty YAML fields. Brain Gym's Prettier check
+  would have failed on every usage file. Now tested.
+- **A wrong expected value in my own test** (the date). Before fixing the
+  code, ask whether the test is right.
+- **Tests that all passed on the first run had holes.** Mutation checks
+  found five: a Perl precedence bug (`$x // "" eq "api"`), heredoc removal,
+  a rule nothing needed, and two report cases.
+- **An "ask" you don't remember answering.** The force-push prompt was
+  approved two hours later. An ask is only as strong as the attention of
+  the person who answers (prompt fatigue). Never-break rules are blocks.
+- **A PR looked for in the wrong repo.** PR numbers are per repo: factory
+  #4 and Brain Gym #5 are different PRs. And a "merged" PR that wasn't:
+  check the state, not the memory.
+
+**Things we learned about the tools.**
+
+- Claude Code runs the hooks of the project the *session started in*, not
+  of the folder a command touches.
+- `.claude/settings.json` is cloned, unlike git hooks: every clone has the
+  agent hook at once.
+- `SessionEnd` hooks share a 1.5-second budget unless a hook sets its own
+  `timeout` ([hooks reference](https://code.claude.com/docs/en/hooks),
+  checked 2026-11-21).
+  > Unverified: whether agent hooks run for `!` commands typed by a human.
+
+**On a legacy project.** The check and the hooks don't care about the
+language. A Windows team needs Git for Windows' bash for the scripts
+(unverified, see the playbook). Most of the value is in the order: an agent
+hook first, so the agent can't take shortcuts while the safety net is thin.
+
+**Still to practise.** Size and freshness checks for the brain (does
+`AGENTS.md` stay under 100 lines; is a brain doc older than the code it
+describes?). Filling in task and corrections after real sessions, so the
+trust ladder has data.

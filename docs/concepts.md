@@ -64,6 +64,11 @@ Updated at the end of every milestone.
 | Mutation check | Break the code on purpose; a test must fail, for the right reason. It tests the tests | [M2](learning-notes.md#m2-kit-distribution), [M5](learning-notes.md#m5-safety-nets), [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Fake time | Tests control the clock; move it in steps, like real time | [M5](learning-notes.md#m5-safety-nets) |
 | Browser agent | An agent that uses the app finds what unit tests can't: how parts behave together | [M5](learning-notes.md#m5-safety-nets) |
+| Usage log | One record per agent session: time, model, tokens by script; task and corrections by a human | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| One file per session | New files never conflict between branches; one shared file would | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Active vs wall time | Leave out long gaps (waiting for a human), or a 2-hour wait counts as work | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Fake tools on PATH | A fake `gh` first on `PATH` makes a test independent of the network | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Portability | macOS ships bash 3.2; CI's bash 5 can pass what the Mac fails | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
 
 ## Guardrails
 
@@ -84,3 +89,11 @@ Updated at the end of every milestone.
 | Pin actions by SHA | A tag can be moved to other code; a commit SHA can't | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Green is not proof | Read the log: did the tests actually run, and how many? | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Install-script lock | npm blocks a package's install scripts until approved: supply-chain protection | [M5](learning-notes.md#m5-safety-nets) |
+| Agent hook | Claude Code runs a script before every action (`PreToolUse`); exit 2 blocks it and the agent reads the reason | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Block vs ask | Block what must never happen; ask (a permission prompt) only where a quick human look is enough | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Prompt fatigue | After many prompts, yes becomes automatic: an ask is only as strong as the attention behind it | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Adapter | The check knows nothing about any tool; a small adapter plugs it into one tool (here Claude Code) | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Text is not command | Ignore quoted text and heredoc bodies, so a commit message may mention a forbidden flag | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Agent hooks are cloned | `.claude/settings.json` is committed, so every clone is protected at once (git hooks are not) | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Which hooks run | The hooks of the project the session started in, not of the folder a command touches | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
+| Sync check | A copy drifts; a check fails when the kit's hooks are missing or edited in the project's settings | [M7](learning-notes.md#m7-agent-hooks-adapters-and-the-usage-log) |
