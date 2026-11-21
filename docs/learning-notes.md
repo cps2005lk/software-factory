@@ -242,3 +242,76 @@ now has a maintenance fee for companies).
 
 **Still to practise.** Browser tests that run without me watching (Playwright,
 maybe in CI), and a mutation tool instead of breaking code by hand.
+
+## M6: Request vs enforcement and the trust ladder
+
+**Concept.** A rule in `AGENTS.md` is a request; a check that refuses is
+enforcement. There are three levels: a written rule (asks), a local git hook
+(stops accidents, in seconds), and a server rule (branch protection with a
+required CI check: stops decisions, for everyone). The kit owns *when* checks
+run (the hooks); the project owns *what* runs (`scripts/check.sh`). The trust
+ladder decides how much an agent may do: read-only → small PRs → features,
+climbing by proof (5 PRs in a row with no correction), per area, and
+dropping one rung after a serious slip.
+
+**Why it matters.** Agents are fast and confident, and they slip in ways a
+written rule can't stop. In this milestone I slipped twice myself (see
+below). Only the locks would have caught it.
+
+**.NET comparison.** Git hooks are like a pre-build step on your own machine.
+Branch protection with a required check is Azure DevOps branch policies with
+**Build validation**: the PR can't complete until the pipeline is green. The
+trust ladder is how a team treats a new junior developer.
+
+**What each lock does.**
+
+| Lock | Stops | Skipped by |
+| --- | --- | --- |
+| `AGENTS.md` rule | Nothing; it asks | Forgetting |
+| Pre-commit hook | Commit on `main`, `CLAUDE.md`, staged secrets | `--no-verify`, a clone without hooks |
+| Pre-push hook | Push to `main`; failing `scripts/check.sh` | `--no-verify`, a clone without hooks |
+| Branch protection + required `check` | Direct push to `main`; merging a PR with red checks | An admin turning it off |
+
+**Mistakes we made.**
+
+- **Hooks silently off.** `core.hooksPath` pointed at a folder in the working
+  tree. On `main`, which didn't have that folder yet, git ran nothing and
+  said nothing: a commit on `main` passed with exit 0. You found it by
+  testing in your own terminal. Fix: a launcher in `.git/hooks/` that
+  *blocks* when the kit is missing (kit v0.2.1). Lesson: could not check must
+  fail, never pass.
+- **I used `--no-verify`** for a Brain Gym commit. I redid the commit with the
+  hooks on. A written rule didn't stop me; an agent hook will (M7).
+- **I stated facts I hadn't checked:** I said the factory repo was public and
+  Brain Gym was private. It was the other way round. `gh repo list` settled
+  it. Evidence first, then the claim.
+- **`!` commands that didn't seem to work.** `git switch` and `git config`
+  run with `!` in the session seemed to fail; the reflog showed no switch.
+  Cause unknown. You ran them in your own terminal instead.
+  > Unverified: why the `!` commands failed.
+- **Prettier wanted to reformat the kit** in `.factory/`, which would break
+  the checksums. Fix: `.factory` in `.prettierignore`. A project's tools
+  must leave the kit's folder alone.
+- **A weak test, found by a mutation check.** The "never prints the secret"
+  test compared output with the whole file, so it caught only 2 of 7 broken
+  versions. Fix: check for the secret itself.
+- **Our own hook blocked the factory's first push of `main`.** You pushed it
+  with `--no-verify`: a deliberate human exception, made in a terminal.
+- **A stale brain fact.** Brain Gym's known issues said branch protection was
+  "not set up yet", but you had already turned it on. Found by reading the
+  settings with `gh api`, not by remembering.
+
+**What we proved.** From a fresh clone (no hooks), a push straight to
+`main` was refused by GitHub: "Changes must be made through a pull request"
+and "Required status check "check" is expected". CI ran on Linux and showed
+232 Brain Gym tests and 7 factory test files actually ran.
+
+**On a legacy project.** `scripts/check.sh` runs `dotnet build` and
+`dotnet test`; the hooks don't care about the language. Azure DevOps has
+Build validation and "bypass policies" permissions; give the bypass to as
+few people as possible. Most legacy areas start on rung 1, because they have
+few tests.
+
+**Still to practise.** Agent hooks that block `--no-verify` and risky `gh`
+commands (M7). Watching a PR with a failing check stay blocked: I can't show
+this as an agent without `--no-verify`, so it's a human exercise.

@@ -14,7 +14,10 @@ Updated at the end of every milestone.
 | Blast radius | The worst damage one mistake can do with the access an agent has today | [M0](learning-notes.md#m0-harness-engineering-and-blast-radius) |
 | Smallest world | Give an agent the least access that still does the job, like a device-only app instead of the live database | [M0](learning-notes.md#m0-harness-engineering-and-blast-radius), [M5](learning-notes.md#m5-safety-nets) |
 | Leaked secret order | Replace the secret first, then clean history; deleting the file does nothing | [M0](learning-notes.md#m0-harness-engineering-and-blast-radius) |
-| Trust ladder | An agent starts read-only and earns more access by proving things | M6 |
+| Trust ladder | An agent starts read-only and earns more by proof: read-only → small PRs → features (5 PRs in a row with no correction to climb) | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Trust per area | One agent can be on different rungs in different parts of a project; an area without mutation-checked tests stays read-only | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Going down | One serious slip (getting around a guardrail, a guess stated as fact) drops that area one rung until a check or rule fixes the cause | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Always human | Merging, repo settings, deploying, the live database, secrets, installing software: on every rung | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 
 ## Instructions and knowledge
 
@@ -39,10 +42,10 @@ Updated at the end of every milestone.
 | Concept | In one line | Learned |
 | --- | --- | --- |
 | Kit distribution | The kit is copied into `.factory/` with a `VERSION` and a checksum per file | [M2](learning-notes.md#m2-kit-distribution) |
-| Ownership boundary | The kit owns `.factory/`; the project owns the rest, and its tools must leave `.factory/` alone | [M2](learning-notes.md#m2-kit-distribution), M6 |
+| Ownership boundary | The kit owns `.factory/`; the project owns the rest, and its tools must leave `.factory/` alone | [M2](learning-notes.md#m2-kit-distribution), [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Checksums detect, don't prevent | A local edit is found at the next install, not stopped | [M2](learning-notes.md#m2-kit-distribution) |
 | Fix in the factory | A kit bug is fixed in the factory, with a new version, then reinstalled | [M2](learning-notes.md#m2-kit-distribution) |
-| Dogfooding | The factory installs and obeys its own kit | M6 |
+| Dogfooding | The factory installs and obeys its own kit | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 
 ## Measuring and testing
 
@@ -58,7 +61,7 @@ Updated at the end of every milestone.
 | Coverage limits | Shows what ran, not what was checked; only sees one test runner | [M5](learning-notes.md#m5-safety-nets) |
 | Where to test first | Risk × how often it changes × how uncovered it is | [M5](learning-notes.md#m5-safety-nets) |
 | Snapshots | Let the code fill them, then read every one | [M5](learning-notes.md#m5-safety-nets) |
-| Mutation check | Break the code on purpose; a test must fail, for the right reason. It tests the tests | [M2](learning-notes.md#m2-kit-distribution), [M5](learning-notes.md#m5-safety-nets), M6 |
+| Mutation check | Break the code on purpose; a test must fail, for the right reason. It tests the tests | [M2](learning-notes.md#m2-kit-distribution), [M5](learning-notes.md#m5-safety-nets), [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Fake time | Tests control the clock; move it in steps, like real time | [M5](learning-notes.md#m5-safety-nets) |
 | Browser agent | An agent that uses the app finds what unit tests can't: how parts behave together | [M5](learning-notes.md#m5-safety-nets) |
 
@@ -66,13 +69,18 @@ Updated at the end of every milestone.
 
 | Concept | In one line | Learned |
 | --- | --- | --- |
-| Request vs enforcement | A written rule can be ignored; a hook, check or permission refuses | [M1](learning-notes.md#m1-instruction-loading), M6 |
+| Request vs enforcement | A written rule can be ignored; a hook, check or permission refuses | [M1](learning-notes.md#m1-instruction-loading), [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Lock vs hook | A lock is the goal; a hook is one way to build it | [M1](learning-notes.md#m1-instruction-loading) |
 | Claude hook exit codes | Only exit code 2 blocks; 1 lets the action through | [M1](learning-notes.md#m1-instruction-loading) |
-| Could not check ≠ OK | A missing check, folder, hook or executable bit must fail, never pass | [M1](learning-notes.md#m1-instruction-loading), [M2](learning-notes.md#m2-kit-distribution), M6 |
+| Could not check ≠ OK | A missing check, folder, hook or executable bit must fail, never pass | [M1](learning-notes.md#m1-instruction-loading), [M2](learning-notes.md#m2-kit-distribution), [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Missing check looks like a pass | A PR with no checks shows "mergeable", like one with green checks | [M2](learning-notes.md#m2-kit-distribution) |
-| Local vs server enforcement | A git hook stops accidents (`--no-verify` skips it); a required server check stops decisions | M6 |
-| Hooks aren't cloned | Git never copies hooks, so a clone can't run a stranger's code; each clone turns them on | M6 |
-| Kit owns when, project owns what | The hook decides when checks run; `scripts/check.sh` decides what | M6 |
-| Should-block and should-allow | A check that blocks everything is as useless as one that blocks nothing | M6 |
+| Local vs server enforcement | A git hook stops accidents (`--no-verify` skips it); a required server check stops decisions | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Hooks aren't cloned | Git never copies hooks, so a clone can't run a stranger's code; each clone turns them on | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Kit owns when, project owns what | The hook decides when checks run; `scripts/check.sh` decides what | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Should-block and should-allow | A check that blocks everything is as useless as one that blocks nothing | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Hook launcher | A small script in `.git/hooks/` that blocks when a branch has no kit, instead of git silently running nothing | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Required check | Branch protection names a CI job (here `check`) that must pass before a PR can merge; add the CI first, or every PR waits forever | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| CI's smallest world | A read-only token and no secrets; the app must build and test without a database | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Pin actions by SHA | A tag can be moved to other code; a commit SHA can't | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
+| Green is not proof | Read the log: did the tests actually run, and how many? | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Install-script lock | npm blocks a package's install scripts until approved: supply-chain protection | [M5](learning-notes.md#m5-safety-nets) |
