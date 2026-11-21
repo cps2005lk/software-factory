@@ -6,3 +6,4 @@ cd "$(dirname "$0")/.."
 
 scripts/test-all.sh
 kit/guardrails/checks/no-claude-md.sh .
+kit/guardrails/checks/claude-settings-in-sync.sh .
