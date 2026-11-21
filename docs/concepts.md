@@ -37,6 +37,21 @@ Updated at the end of every milestone.
 | Personal vs project | How one person likes to work goes in their personal file, not the repo | [M4](learning-notes.md#m4-the-brain) |
 | Freshness rule | Code and its brain doc change in the same pull request | [M4](learning-notes.md#m4-the-brain) |
 
+## Task loop and handoffs
+
+| Concept | In one line | Learned |
+| --- | --- | --- |
+| Task loop | Spec → plan → tasks → one task (failing test, code, commit, tick) → next | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Handoff | A fresh session knows only what is in files; chat-only instructions don't exist for it | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Stale memory | After a human edits the plan, start a fresh session so the agent reads the new version | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Handoff test | Stop halfway, start a fresh session with no hint: it must continue at the first unticked task | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Constitution | Project rules for Spec Kit; it links to `AGENTS.md` instead of copying it | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Rule bending | Agents reinterpret rules to fit their plan; change a wrong rule in the open instead | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Two reviewers | A human and `/speckit-analyze` found different problems | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Same-reason failures | Tests that all fail because there's no output prove little; a mutation check shows which have teeth | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Version cooldown | Pin a release about two weeks old, so others find its problems first | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+| Tick is a claim | Verify: check out the Red commit, re-run the mutation | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
+
 ## Packaging
 
 | Concept | In one line | Learned |
@@ -55,7 +70,7 @@ Updated at the end of every milestone.
 | Baseline | Today's state, measured: the control group for every later claim | [M3](learning-notes.md#m3-discovery-and-baselines) |
 | Measure, don't guess | A hint biases a prediction; only a measurement counts | [M3](learning-notes.md#m3-discovery-and-baselines) |
 | Counting tokens | Sum the session `.jsonl` file once per reply (`unique_by(.id)`) | [M3](learning-notes.md#m3-discovery-and-baselines) |
-| Spec-driven development | Write what (spec), how (plan) and steps (tasks) as files before code; mistakes are cheapest on paper | M3 (side question); practice in M8 |
+| Spec-driven development | Write what (spec), how (plan) and steps (tasks) as files before code; mistakes are cheapest on paper | M3 (side question), [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
 | Unit vs characterization test | "It should do X" vs "it does X today" | [M5](learning-notes.md#m5-safety-nets) |
 | Failing test first | Red on old code proves the bug; green proves the fix | [M5](learning-notes.md#m5-safety-nets) |
 | Coverage limits | Shows what ran, not what was checked; only sees one test runner | [M5](learning-notes.md#m5-safety-nets) |

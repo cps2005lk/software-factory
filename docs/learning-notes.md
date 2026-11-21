@@ -392,3 +392,58 @@ hook first, so the agent can't take shortcuts while the safety net is thin.
 `AGENTS.md` stay under 100 lines; is a brain doc older than the code it
 describes?). Filling in task and corrections after real sessions, so the
 trust ladder has data.
+
+## M8: The task loop and handoffs
+
+**Concept.** An agent builds a feature in small loops: spec (what and why) →
+plan (how) → tasks (small ordered steps) → one task at a time (failing test,
+code, commit, tick) → next. Everything is written to files, so a session can
+stop and a fresh one, with no memory, can continue. Spec Kit gives the loop a
+fixed shape: templates plus Claude Code skills (`/speckit-specify`, `plan`,
+`tasks`, `analyze`, `implement`).
+
+**Why it matters.** Sessions end, context fills up, and agents get replaced.
+Whatever isn't in a file is lost. This conversation itself was summarized
+several times; the files and memory notes carried the work.
+
+**.NET comparison.** A work item in Azure Boards with acceptance criteria and
+child tasks: anyone can pick up a task, because everything needed is written
+on it. The constitution is like `.editorconfig` plus analyzer rules: change
+a rule in the file, don't sprinkle `#pragma warning disable`.
+
+**What we proved (sandbox, word counter).**
+
+| Claim | Proof |
+| --- | --- |
+| Files carry the work | A fresh session, given only `/speckit-implement`, said "T001–T006 are already done. Next is T007" |
+| Red was real | Checking out the Red commit: 0 passed, 7 failed |
+| Tests have teeth | Changing `wc -w` to `wc -l`: 6 of 7 tests fail (an empty file has 0 lines and 0 words) |
+| Spec Kit 1.3.2 is safe with our kit | `specify init` wrote only `.claude/skills/` and `.specify/`: no `CLAUDE.md`, no `AGENTS.md`, no settings, no network calls |
+
+**Mistakes and surprises.**
+
+- **The agent bent its own rules, twice.** A task said its tests would "PASS
+  already … This is allowed by Principle I" (every test must fail first).
+  And it read the `set -e` rule as "only for the program" instead of saying
+  the rule was wrong. Fix: write all tests before the code, and change a
+  wrong rule in the open (constitution 1.0.0 → 1.0.1).
+- **The spec stated something false:** a feature branch that didn't exist.
+  Create the branch before `/speckit-specify`.
+- **`/speckit-analyze` found four problems I missed** (for example `$(cat …)`
+  drops trailing newlines, and `wc -w` splits on `\r`), and I found a hole in
+  its fix (all tests failing for the same reason). Two reviewers beat one.
+- **I assumed the agent would run to the end.** It stopped after one task,
+  because the personal `~/.claude/CLAUDE.md` says "stop after each step". My
+  instruction was only in our chat, so it didn't exist for that agent.
+- **I amended the constitution by hand,** although it says amendments go
+  through `/speckit-constitution`. Recorded in its change log.
+- **`~/.local/bin` is not on `PATH`** after installing with `uv`. Fixing it
+  edits the shell config, so it waits for the owner.
+
+**On a legacy project.** The loop is the same; tasks start with
+characterization tests before the first change, and Spec Kit has PowerShell
+scripts for Windows (`--script ps`).
+
+**Still to practise.** Spec Kit in Brain Gym with a constitution that links
+to `AGENTS.md` (M10, Odd One Out). Roles: a separate implementer and
+reviewer (M9).
