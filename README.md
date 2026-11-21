@@ -11,10 +11,12 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 7 (agent hooks and usage log) done. The playbook covers discovery,
-the brain, the safety net, guardrails and the trust ladder. The kit's checks
-run as git hooks, as Claude Code hooks before every command, and in CI on
-every pull request. Each agent session leaves a usage file.
+Milestone 8 (task loop and handoffs) done. The onboarding playbook covers
+discovery, the brain, the safety net, guardrails and the trust ladder; the
+task loop playbook covers spec, plan, tasks and handoffs with Spec Kit.
+The kit's checks run as git hooks, as Claude Code hooks before every
+command, and in CI on every pull request. Each agent session leaves a usage
+file.
 
 ## Read next
 
