@@ -11,9 +11,10 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 6 (guardrails and trust ladder) done. The playbook covers discovery,
+Milestone 7 (agent hooks and usage log) done. The playbook covers discovery,
 the brain, the safety net, guardrails and the trust ladder. The kit's checks
-run as git hooks, and CI runs them on every pull request.
+run as git hooks, as Claude Code hooks before every command, and in CI on
+every pull request. Each agent session leaves a usage file.
 
 ## Read next
 
