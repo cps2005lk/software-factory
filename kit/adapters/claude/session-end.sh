@@ -70,6 +70,6 @@ tokens_input: $(get input)
 tokens_cache_write: $(get cache_write)
 tokens_cache_read: $(get cache_read)
 tokens_output: $(get output)
-task: $task
-corrections: $corrections
+task:${task:+ $task}
+corrections:${corrections:+ $corrections}
 YML
