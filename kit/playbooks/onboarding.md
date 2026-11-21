@@ -319,6 +319,22 @@ server rule is the lock nobody gets past.
    useless as one that blocks nothing. For each one: show it **blocks** the
    bad case and **allows** the good case. The server lock: from a fresh clone
    (no hooks), push a commit straight to `main`. It must be refused.
+8. **Turn on the agent hook.** Copy
+   `.factory/adapters/claude/settings.json` to `.claude/settings.json` and
+   commit it. Unlike git hooks, this file is cloned, so every clone has it.
+   Before every shell command, Claude Code runs
+   `.factory/guardrails/checks/risky-command.sh`, which answers:
+   - **block**: skipping hooks (`--no-verify`, `git commit -n`,
+     `core.hooksPath`), pushing to `main`, `gh pr merge`;
+   - **ask** (a permission prompt for the human): force-push, `gh api` writes,
+     `gh repo edit`, secrets;
+   - **allow**: everything else.
+
+   On a branch without `.factory/`, the hook blocks every command instead of
+   passing silently. Prove it live: ask the agent to run
+   `git push --dry-run --no-verify`. It must be refused before it runs.
+   - An "ask" is only as strong as the person who answers. If a rule must
+     never be broken, make it a block.
 
 ### Rules for agents
 
@@ -334,8 +350,9 @@ server rule is the lock nobody gets past.
 - `--no-verify` skips the local hooks. The server rule catches it at the PR.
 - An admin can switch the server rule off. That is on purpose (a broken CI
   must not lock everyone out), but it means the owner holds the last key.
-- Git hooks only see git. Commands an agent runs (`gh`, deleting files,
-  calling an API) need agent hooks: M7.
+- Git hooks only see git, and only at commit or push. The agent hook (step 8)
+  sees every shell command before it runs, but not tricks like `"$FLAG"` or
+  a script that runs git itself.
 
 ### Legacy .NET track
 
@@ -361,6 +378,8 @@ Sources:
 - GitHub, [About protected branches](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches)
   and [Available rules for rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets),
   checked 2026-11-21.
+- Claude Code, [Hooks reference](https://code.claude.com/docs/en/hooks), checked
+  2026-11-21 (Claude Code 2.1.330); block and ask tested live the same day.
 - Microsoft Learn, [Branch policies](https://learn.microsoft.com/en-us/azure/devops/repos/git/branch-policies),
   checked 2026-11-21.
 - Hooks not cloned, silent `core.hooksPath` pass, server refusal: tested with
