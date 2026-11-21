@@ -1,0 +1,16 @@
+# Usage of one agent session. Filled by the factory's SessionEnd hook;
+# a human fills task and corrections.
+session: f590acf3-c456-4b47-be7f-7b845d399c1b
+project: software-factory
+branch: m7-usage-log
+started: 2026-11-21T09:38:15Z
+model: claude-haiku-5-5
+wall_minutes: 0
+active_minutes: 0
+replies: 1
+tokens_input: 2
+tokens_cache_write: 11602
+tokens_cache_read: 9449
+tokens_output: 4
+task: "Live test: does SessionEnd run for claude -p?"
+corrections: 0
