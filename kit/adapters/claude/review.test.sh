@@ -92,5 +92,28 @@ run --another-round specs/001-x >/dev/null; git add -A && git commit -qm "approv
 run specs/001-x >/dev/null; grep -qx "Round: 1" specs/001-x/review.md && pass "after APPROVE: back to round 1" || fail "reset after approve"
 unset FAKE_LAST
 
+# Full feature files and the Red proof, in a fresh repo.
+q="$tmp/proj2"
+git init -q -b main "$q" && cd "$q" || exit 1
+git config user.email t@example.com && git config user.name t
+mkdir -p specs/002-y/contracts .claude/agents
+echo "SPEC-TEXT-123" >specs/002-y/spec.md; echo "CONTRACT-TEXT-456" >specs/002-y/contracts/cli.md
+printf 'OLD-REVIEW-789\nVerdict: APPROVE\n' >specs/002-y/review.md; echo reviewer >.claude/agents/reviewer.md
+git add -A && git commit -q -m base && git switch -q -c feature
+echo "test" >the.test && git add -A && git commit -q -m "Red: add the test"
+red1="$(git rev-parse --short HEAD)"
+echo "code" >code.sh && git add -A && git commit -q -m "Green: add the code"
+echo "more" >>the.test && git add -A && git commit -q -m "Red: a test that passes at once"
+red2="$(git rev-parse --short HEAD)"
+"$script" --check "test -f code.sh" specs/002-y >/dev/null 2>&1
+grep -q "SPEC-TEXT-123" "$tmp/prompt" && grep -q "CONTRACT-TEXT-456" "$tmp/prompt" && pass "every feature file is in the prompt, in full" || fail "feature files in full"
+! grep -q "OLD-REVIEW-789" "$tmp/prompt" && pass "the old review is left out" || fail "old review left out"
+grep -q "$red1 Red: add the test: checks FAIL (exit 1)" "$tmp/prompt" && pass "a real Red step is proven (checks fail there)" || fail "real Red proven"
+grep -q "$red2 Red: a test that passes at once: checks PASS (exit 0)\. This Red step is NOT proven" "$tmp/prompt" && pass "a Red step that passes is reported as not proven" || fail "fake Red reported"
+[[ -z "$(git worktree list | sed 1d)" ]] && pass "no worktrees left behind" || fail "worktrees left behind"
+git switch -q -c no-reds main && echo x >x.sh && git add -A && git commit -q -m "Add x"
+"$script" --check "true" specs/002-y >/dev/null 2>&1
+grep -q "no Red step can be proven" "$tmp/prompt" && pass "no Red: commits: said plainly" || fail "no reds"
+
 echo
 [[ $fails == 0 ]] && echo "All tests passed." || { echo "$fails test(s) failed."; exit 1; }
