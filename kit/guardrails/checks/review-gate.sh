@@ -12,6 +12,9 @@
 #   - specs/<feature>/review.md exists and its last line is "Verdict: APPROVE";
 #   - its "Reviewed-commit:" is in this branch's history;
 #   - no code changed after that commit (only specs/, docs/, *.md, .factory/).
+#   - every task in specs/<feature>/tasks.md is ticked ("- [x]"): an approved
+#     review of an unfinished feature is not enough. Counting is a fact, not
+#     a judgement, so the gate does it, not the reviewer.
 # Branches that touch no specs/ folder are not gated (small fixes and docs:
 # on the trust ladder a human reads every line of those).
 #
@@ -49,6 +52,8 @@ failed=0
 fail() { echo "review-gate: specs/$1: $2" >&2; failed=1; }
 for f in $features; do
   r="specs/$f/review.md"
+  open="$(grep -oE '^[[:space:]]*- \[ \] T[0-9]+' "specs/$f/tasks.md" 2>/dev/null | grep -oE 'T[0-9]+' | tr '\n' ' ')"
+  [[ -z "$open" ]] || fail "$f" "tasks not done: $open(tick them, or remove them from tasks.md with a reason)."
   if [[ ! -f "$r" ]]; then
     fail "$f" "no review.md. Run .factory/adapters/claude/review.sh specs/$f, then commit the review."
     continue

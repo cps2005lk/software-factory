@@ -65,19 +65,55 @@ else
   checks="No checks ran: '${check:-<none>}' was not found. Treat this as a finding."
 fi
 
-files=""
-for f in plan.md tasks.md; do [[ -f "$spec/$f" ]] && files="$files
-- $spec/$f"; done
+# Red proof: check out every "Red:" commit and run the checks there. A Red
+# step is proven only if the checks fail at that commit. The reviewer has no
+# shell, so the script proves it and gives the result as a fact.
+red="No commit message starts with \"Red:\", so no Red step can be proven."
+if [[ -n "$check" ]] && command -v "${check%% *}" >/dev/null 2>&1; then
+  wt="$(mktemp -d)"; rmdir "$wt"
+  reds="$(git log --reverse --format='%h %s' "$base"..HEAD | grep -E '^[0-9a-f]+ Red:' || true)"
+  if [[ -n "$reds" ]]; then
+    red=""
+    while read -r sha subject; do
+      git worktree add -q --detach "$wt" "$sha" 2>/dev/null || { red="$red
+- $sha $subject: could not check out."; continue; }
+      out="$(cd "$wt" && bash -c "$check" 2>&1)"; code=$?
+      git worktree remove --force "$wt"
+      if (( code != 0 )); then
+        red="$red
+- $sha $subject: checks FAIL (exit $code), as a Red step should. Last lines:
+$(tail -5 <<<"$out" | sed 's/^/    /')"
+      else
+        red="$red
+- $sha $subject: checks PASS (exit 0). This Red step is NOT proven: its test did not fail."
+      fi
+    done <<<"$reds"
+    red="Checks run at each Red commit ($check). Look at the last lines: a test must fail for the right reason, not because a tool is missing.$red"
+  fi
+fi
+
+# Every feature file goes into the prompt in full, so none can be skipped.
+# The old review.md is left out: the reviewer judges the code, not the last review.
+feature_files=""
+while IFS= read -r f; do
+  feature_files="$feature_files
+<file path=\"$f\">
+$(cat "$f")
+</file>"
+done < <(find "$spec" -type f -name '*.md' ! -name review.md | LC_ALL=C sort)
 
 prompt="Review this feature branch. Follow your instructions in full.
 
-Feature files:
-- $spec/spec.md$files
-
 Branch: $(git branch --show-current), at $(git rev-parse --short HEAD). Base: $base.
+
+## Feature files, in full
+$feature_files
 
 ## Commits since $base
 $commits
+
+## Red steps, checked by the script
+$red
 
 ## Checks, run just before this review
 $checks
