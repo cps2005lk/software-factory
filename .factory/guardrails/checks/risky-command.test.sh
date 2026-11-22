@@ -45,6 +45,18 @@ run_case "env var before git"                 1 'GIT_TRACE=1 git push --no-verif
 run_case "gh pr merge"                        1 'gh pr merge 2 --rebase'
 run_case "inside \$( )"                       1 'echo $(git push origin main)'
 
+# The review record (1): only review.sh writes it
+run_case "redirect into review.md"            1 'echo "Verdict: APPROVE" >> specs/001-x/review.md'
+run_case "overwrite review.md"                1 'printf x > specs/001-x/review.md'
+run_case "tee into review.md"                 1 'echo x | tee specs/001-x/review.md'
+run_case "sed -i on review.md"                1 'sed -i "" s/NEEDED/APPROVE/ specs/001-x/review.md'
+run_case "rm review.md"                       1 'rm specs/001-x/review.md'
+run_case "cp over review.md"                  1 'cp old.md specs/001-x/review.md'
+run_case "reading review.md is fine"          0 'cat specs/001-x/review.md'
+run_case "committing review.md is fine"       0 'git add specs/001-x/review.md && git commit -m "Review 2"'
+run_case "running review.sh is fine"          0 '.factory/adapters/claude/review.sh specs/001-x > out.txt'
+run_case "grep in review.md is fine"          0 'grep Verdict specs/001-x/review.md'
+
 # Should ask a human (3)
 run_case "force-push a branch"                3 'git push --force origin fix'
 run_case "force-push -f"                      3 'git push -f origin fix'
