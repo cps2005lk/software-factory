@@ -34,6 +34,10 @@ perl -e '
 
   my (@block, @ask);
 
+  # The review record is written only by review.sh, never by an agent.
+  my $rv = qr{(?:^|/)review\.md\b};
+  push @block, "review.md is written only by review.sh: an agent must not change a review." if $cmd =~ />\|?\s*\S*$rv/;
+
   # 2. Split into simple commands: ; && || | newlines, $( ), backticks, ( ).
   for my $part (split /\|\||&&|[;|\n`()]|\$\(/, $cmd) {
     my @t = grep { length } split /\s+/, $part;
@@ -43,6 +47,9 @@ perl -e '
 
     push @block, "--no-verify skips the git hooks." if grep { /^--no-verify$/ } @t;
     push @block, "core.hooksPath changes which git hooks run." if grep { /core\.hookspath/i } @t;
+    if ($prog =~ /^(tee|cp|mv|rm|truncate|dd)$/ || ($prog =~ /^(sed|perl)$/ && grep { /^-i/ || /^-pi$/ } @t)) {
+      push @block, "review.md is written only by review.sh: an agent must not change a review." if grep { /$rv/ } @t;
+    }
 
     if ($prog eq "git") {
       # Find the git subcommand: skip global options and their values.
