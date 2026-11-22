@@ -99,6 +99,7 @@ git config user.email t@example.com && git config user.name t
 mkdir -p specs/002-y/contracts .claude/agents
 echo "SPEC-TEXT-123" >specs/002-y/spec.md; echo "CONTRACT-TEXT-456" >specs/002-y/contracts/cli.md
 printf 'OLD-REVIEW-789\nVerdict: APPROVE\n' >specs/002-y/review.md; echo reviewer >.claude/agents/reviewer.md
+echo "RULES-TEXT-321" >AGENTS.md
 git add -A && git commit -q -m base && git switch -q -c feature
 echo "test" >the.test && git add -A && git commit -q -m "Red: add the test"
 red1="$(git rev-parse --short HEAD)"
@@ -107,6 +108,7 @@ echo "more" >>the.test && git add -A && git commit -q -m "Red: a test that passe
 red2="$(git rev-parse --short HEAD)"
 "$script" --check "test -f code.sh" specs/002-y >/dev/null 2>&1
 grep -q "SPEC-TEXT-123" "$tmp/prompt" && grep -q "CONTRACT-TEXT-456" "$tmp/prompt" && pass "every feature file is in the prompt, in full" || fail "feature files in full"
+grep -q "RULES-TEXT-321" "$tmp/prompt" && pass "the project rules are in the prompt, in full" || fail "project rules in full"
 ! grep -q "OLD-REVIEW-789" "$tmp/prompt" && pass "the old review is left out" || fail "old review left out"
 grep -q "$red1 Red: add the test: checks FAIL (exit 1)" "$tmp/prompt" && pass "a real Red step is proven (checks fail there)" || fail "real Red proven"
 grep -q "$red2 Red: a test that passes at once: checks PASS (exit 0)\. This Red step is NOT proven" "$tmp/prompt" && pass "a Red step that passes is reported as not proven" || fail "fake Red reported"
