@@ -26,6 +26,8 @@ run_case "gh api read"                        0 'gh api repos/o/r/branches/main/
 run_case "gh api explicit GET"                0 'gh api -X GET repos/o/r'
 run_case "grep for the flag in files"         0 'grep -rn -- "--no-verify" docs'
 run_case "npm test"                           0 'npm test'
+run_case "read core.hooksPath"                 0 'git config core.hooksPath'
+run_case "read core.hooksPath with --get"     0 'git config --get core.hooksPath'
 
 # Should block (1)
 run_case "push --no-verify"                   1 'git push --no-verify'
@@ -36,6 +38,9 @@ run_case "after cd &&"                        1 'cd repo && git commit -n -m "x"
 run_case "git -C dir commit -n"               1 'git -C ../app commit -n -m "x"'
 run_case "core.hooksPath via -c"              1 'git -c core.hooksPath=/dev/null commit -m "x"'
 run_case "core.hooksPath via config"          1 'git config core.hooksPath .nowhere'
+run_case "unset core.hooksPath"                1 'git config --unset core.hooksPath'
+run_case "git config set core.hooksPath"      1 'git config set core.hooksPath /dev/null'
+run_case "global config core.hooksPath"       1 'git config --global core.hooksPath ~/nohooks'
 run_case "push to main"                       1 'git push origin main'
 run_case "push HEAD:main"                     1 'git push origin HEAD:main'
 run_case "push to master"                     1 'git push origin master'
