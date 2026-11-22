@@ -102,9 +102,22 @@ $(cat "$f")
 </file>"
 done < <(find "$spec" -type f -name '*.md' ! -name review.md | LC_ALL=C sort)
 
+# The project rules too: the standard the reviewer judges against.
+rules=""
+for f in AGENTS.md .specify/memory/constitution.md; do
+  [[ -f "$f" ]] && rules="$rules
+<file path=\"$f\">
+$(cat "$f")
+</file>"
+done
+[[ -n "$rules" ]] || rules="No AGENTS.md and no constitution in this project."
+
 prompt="Review this feature branch. Follow your instructions in full.
 
 Branch: $(git branch --show-current), at $(git rev-parse --short HEAD). Base: $base.
+
+## Project rules, in full
+$rules
 
 ## Feature files, in full
 $feature_files
