@@ -37,6 +37,11 @@ expect "approved, nothing changed after: passes" 0
 echo "- [x] T001" >specs/001-x/tasks.md && mkdir -p docs && echo n >docs/n.md && commit "tick and docs"
 expect "only specs/docs changed after the review: passes" 0
 
+printf -- '- [x] T001\n- [ ] T002 Write the README\n  - [ ] not a task line\n' >specs/001-x/tasks.md && review "Verdict: APPROVE" "$(git rev-parse HEAD)" && commit "open task"
+expect "approved, but a task is not ticked: blocked" 1
+printf -- '- [x] T001\n- [x] T002 Write the README\n  - [ ] not a task line\n' >specs/001-x/tasks.md && commit "all ticked"
+expect "every task ticked (sub-bullets ignored): passes" 0
+
 echo "echo changed" >>wc.sh && commit "code after review"
 expect "code changed after the review: blocked" 1
 
