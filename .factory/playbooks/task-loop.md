@@ -108,3 +108,57 @@ Sources: Spec Kit [README](https://github.com/github/spec-kit) and
 [docs](https://github.github.io/spec-kit/) (last updated 2026-11-04), checked
 2026-11-21. Behaviour of version 1.3.2 (files written,
 `--no-model-invocation`, handoff) tested on 2026-11-21.
+
+## Roles: implementer and reviewer
+
+Nobody grades their own work. One role builds, another checks, like
+maker-checker in a bank or a required reviewer on a pull request.
+
+| | Implementer | Reviewer |
+| --- | --- | --- |
+| File | `.claude/agents/implementer.md` | `.claude/agents/reviewer.md` |
+| Started by | A human: `claude --agent implementer` | A human: `.factory/adapters/claude/review.sh specs/<feature>` |
+| Tools | All, behind the agent hook | Read, Grep, Glob only (no shell, no edits) |
+| Gets | The feature files and the repo | A fixed prompt from the script: feature files, commits with their files, the diff, the check output |
+| Writes | Code and tests: a `Red:` commit with tests only, then `Green:` | Nothing. The script writes `specs/<feature>/review.md` |
+| Never | Reviews itself, edits `review.md`, changes the spec or a test to pass | Fixes anything |
+
+Copy both files from `.factory/adapters/claude/agents/` to `.claude/agents/`,
+on `main`, before a feature branch starts. Otherwise they show up in the
+feature's diff.
+
+### The review loop
+
+1. The implementer finishes the tasks (or a checkpoint).
+2. A human runs `review.sh specs/<feature>`. It refuses uncommitted work.
+3. The verdict is the last line: `Verdict: APPROVE` (exit 0) or
+   `Verdict: CHANGES NEEDED` (exit 1). No verdict means the review is not
+   complete (exit 2).
+4. Commit `review.md`. On CHANGES NEEDED, the implementer fixes the critical
+   and major findings, and the human runs the review again.
+5. **Round limit.** After 3 reviews in a row say CHANGES NEEDED, `review.sh`
+   stops: a human decides (fix it, change the spec, or allow one more round
+   with `--another-round`). Endless ping-pong helps nobody.
+
+### Enforcement: ignored, faked or missing reviews
+
+- **Missing or ignored:** `review-gate.sh` runs in CI as part of the required
+  check. A branch that changes code for a `specs/<feature>/` folder fails
+  unless that feature's `review.md` approves, names a reviewed commit from
+  the branch, and no code changed after it. Branches without a spec folder
+  are not gated (on the trust ladder, a human reads every line of those).
+- **Faked:** the agent hook blocks Edit and Write on `review.md`, and shell
+  commands that write to it (`>`, `tee`, `cp`, `mv`, `rm`, `sed -i`).
+  `review.sh` is not an agent tool, so it can still write the file.
+- **Known gaps:** a human can still edit `review.md` or turn off branch
+  protection; the owner holds the last key. A path in quotes (`> "review.md"`)
+  gets past the shell rule; the gate still checks that the reviewed commit
+  is real and current.
+
+### What the first review found (sandbox)
+
+With a known answer (half the feature was missing), the reviewer said
+CHANGES NEEDED and named the missing requirement. It also found a Red step
+merged into a Green commit, a claim it couldn't verify, and tooling in the
+feature diff. It admitted it skimmed the plan; listing "Not checked" made
+the shortcut visible.
