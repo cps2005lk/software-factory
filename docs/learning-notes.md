@@ -447,3 +447,62 @@ scripts for Windows (`--script ps`).
 **Still to practise.** Spec Kit in Brain Gym with a constitution that links
 to `AGENTS.md` (M10, Odd One Out). Roles: a separate implementer and
 reviewer (M9).
+
+## M9: Implementer and reviewer roles
+
+**Concept.** Nobody grades their own work. One role builds (the implementer),
+another checks (the reviewer), with different instructions, fewer
+permissions and a fresh context. A plain script gathers the facts (tests,
+the Red proof, the diff); the reviewer only judges. A gate in CI makes the
+review a lock: no merge without a current, approved review of exactly this
+code.
+
+**Why it matters.** An agent that reviews its own work shares its own blind
+spots: in M8 it wrote "allowed by Principle I" and believed it. A second
+reviewer found problems the first missed, in every round.
+
+**.NET comparison.** Maker-checker in a bank; a required reviewer on a pull
+request; Azure DevOps build validation. Facts go to tests and analyzers;
+code review is for judgement.
+
+**The principles, with the evidence.**
+
+| Principle | What showed it |
+| --- | --- |
+| The checker can't change what it checks | The reviewer has only Read, Grep and Glob. Edits and shell writes to `review.md` are blocked by the hook |
+| Test the checker with a known answer | Given a half-done feature, the reviewer said CHANGES NEEDED and named the missing requirement |
+| Facts for the script, judgement for the AI | Round 2 approved an unfinished feature (severity drifted from major to minor). Now the gate counts unticked tasks, and the script proves each Red step |
+| Don't trust an instruction to be followed; put the input in front of it | "Don't skim" was ignored twice. Now every feature file and the project rules go into the prompt in full |
+| An approval belongs to an exact version | The gate checks that no code changed after the reviewed commit |
+| The rules of the process are part of the product | The reviewer noticed its own instructions changing in the branch; now `.claude/` files need a fresh review |
+| Bound the loop | After 3 rounds of CHANGES NEEDED, a human decides |
+| Honest gaps beat hidden ones | Every review lists "Not checked"; that is how we caught the skimming |
+| A block is a stop sign | The implementer stopped when it couldn't create a branch, and left T017 unticked rather than work around a block |
+
+**Mistakes and surprises.**
+
+- **My setup broke our own rule.** The sandbox worked on `main` with no
+  branch, and I gave the implementer no permission to create one. It
+  stopped and asked; I created the branch.
+- **"Used other ways" when a command was denied.** Harmless here (read-only
+  commands), but it is the pattern we don't want. A denial is a stop sign.
+- **Wrong blame.** The implementer said "the factory hook" blocked it; it
+  was Claude Code's own permission check. Check which layer said no.
+- **A false positive in our hook:** reading `core.hooksPath` was blocked.
+  Fixed: only changing it is blocked.
+- **zsh is not bash:** `echo ======` is a special expansion, and an unquoted
+  `$args` is not split into words. Two of my own checks were wrong; the
+  code was right.
+- **A useless speed test:** macOS `base64` writes one long "word". Check
+  that a test can fail before trusting it passes.
+- **Approval without a re-review:** after T015–T017 only Markdown changed,
+  so the old approval still counted. That is the rule as designed (docs
+  aren't re-reviewed), but it showed the `.claude/` gap.
+
+**On a legacy project.** The roles work the same: the reviewer reads the
+spec, the rules and the diff; the script runs `dotnet test` at each Red
+commit. The gate needs the feature's tasks and review in the repo, so start
+using the task loop before expecting the gate to protect anything.
+
+**Still to practise.** The whole loop on a real Brain Gym feature (M10).
+Different models as reviewer (does Opus find what Sonnet misses?) in M11.
