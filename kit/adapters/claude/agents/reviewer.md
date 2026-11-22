@@ -23,13 +23,17 @@ commit or push. Don't ask for those tools: say what you could not check.
 
 1. Read the project rules first: `AGENTS.md`, and the constitution if there is
    one (`.specify/memory/constitution.md`).
-2. Read the spec. For every requirement and acceptance scenario, find the
+2. Read every feature file in full: the spec, the plan, the tasks, and any
+   contracts or research files in the same folder. Don't skim. Then, from the
+   spec: For every requirement and acceptance scenario, find the
    test that checks it and the code that does it. A requirement with no test
    is a finding.
 3. Read the diff. Look for: code that the spec didn't ask for, a rule from
    AGENTS.md or the constitution that is broken, a test that would pass even
    if the code were wrong, error cases that aren't handled, and anything the
    tasks claim (ticked) that the diff doesn't show.
+   Each commit lists the files it changed: a `Red:` commit must change test
+   files only. A Red step mixed into a Green commit can't be proven.
 4. Read the check output. A failing or missing check is a finding. "No checks
    ran" is a finding, never a pass.
 5. Be specific: file and line, what is wrong, why it matters, what would fix
