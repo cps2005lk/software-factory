@@ -36,7 +36,7 @@ command -v claude >/dev/null || stop "claude not found."
 git rev-parse --verify -q "$base^{commit}" >/dev/null || stop "base '$base' not found."
 [[ -z "$(git status --porcelain)" ]] || stop "uncommitted changes. Commit first: the reviewer only reviews committed work."
 
-commits="$(git log --oneline "$base"..HEAD)"
+commits="$(git log --stat --format='%h %s' "$base"..HEAD)"
 [[ -n "$commits" ]] || stop "no commits on this branch since '$base': nothing to review."
 
 if [[ -n "$check" ]] && command -v "${check%% *}" >/dev/null 2>&1; then

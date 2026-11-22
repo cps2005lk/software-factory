@@ -38,6 +38,7 @@ for t in Bash Edit Write; do grep -qx "$t" "$tmp/args" || fail "removes $t"; don
 grep -q "specs/001-x/spec.md" "$tmp/prompt" && grep -q "specs/001-x/tasks.md" "$tmp/prompt" && pass "prompt names the spec and tasks" || fail "prompt names the spec and tasks"
 grep -q "+echo hello" "$tmp/prompt" && pass "prompt has the diff" || fail "prompt has the diff"
 grep -q "Add hello" "$tmp/prompt" && pass "prompt has the commits" || fail "prompt has the commits"
+grep -q "hello.sh" "$tmp/prompt" && grep -q "Add hello" "$tmp/prompt" && grep -q "1 file changed" "$tmp/prompt" && pass "each commit lists its files" || fail "each commit lists its files"
 grep -q "ALL CHECKS PASSED" "$tmp/prompt" && grep -q "Exit code: 0" "$tmp/prompt" && pass "prompt has the check output" || fail "prompt has the check output"
 grep -q "^Verdict: APPROVE" specs/001-x/review.md && pass "writes review.md" || fail "writes review.md"
 rm -f specs/001-x/review.md
