@@ -73,5 +73,24 @@ mv .claude/agents/reviewer.md "$tmp/r.md"
 [[ "$(run specs/001-x)" == 2 && ! -e "$tmp/prompt" ]] && pass "no reviewer agent file: refused" || fail "no reviewer file"
 mv "$tmp/r.md" .claude/agents/reviewer.md
 
+# Rounds and the reviewed commit (review.md is committed, as a human would).
+export FAKE_LAST="Verdict: CHANGES NEEDED"
+run specs/001-x >/dev/null
+head_sha="$(git rev-parse HEAD)"
+grep -qx "Reviewed-commit: $head_sha" specs/001-x/review.md && pass "records the full reviewed commit" || fail "records the reviewed commit"
+grep -qx "Round: 1" specs/001-x/review.md && pass "first review is round 1" || fail "round 1"
+git add -A && git commit -qm "review 1"
+run specs/001-x >/dev/null; grep -qx "Round: 2" specs/001-x/review.md && pass "after CHANGES NEEDED: round 2" || fail "round 2"
+git add -A && git commit -qm "review 2"
+run specs/001-x >/dev/null; git add -A && git commit -qm "review 3"
+rm -f "$tmp/prompt"
+[[ "$(run specs/001-x)" == 2 && ! -e "$tmp/prompt" ]] && grep -q "A human decides" "$tmp/out" && pass "after 3 rounds of CHANGES NEEDED: stops, a human decides" || fail "round limit" "$(cat "$tmp/out")"
+run --another-round specs/001-x >/dev/null; grep -qx "Round: 4" specs/001-x/review.md && pass "--another-round: a human allows round 4" || fail "another round"
+git add -A && git commit -qm "review 4"
+export FAKE_LAST="Verdict: APPROVE"
+run --another-round specs/001-x >/dev/null; git add -A && git commit -qm "approved"
+run specs/001-x >/dev/null; grep -qx "Round: 1" specs/001-x/review.md && pass "after APPROVE: back to round 1" || fail "reset after approve"
+unset FAKE_LAST
+
 echo
 [[ $fails == 0 ]] && echo "All tests passed." || { echo "$fails test(s) failed."; exit 1; }
