@@ -3,9 +3,13 @@
 # finished feature branch against its spec. The implementer doesn't write
 # the reviewer's prompt; this script does, the same way every time.
 #
-# Usage: review.sh [--base <ref>] [--check "<command>"] <spec-folder>
-#   --base   branch to compare with (default: main)
-#   --check  the project's checks, run before the review (default: scripts/check.sh)
+# Usage: review.sh [--base <ref>] [--check "<command>"] [--another-round] <spec-folder>
+#   --base           branch to compare with (default: main)
+#   --check          the project's checks, run before the review (default: scripts/check.sh)
+#   --another-round  a human allows a review after 3 rounds of CHANGES NEEDED
+#
+# Rounds: each review after a CHANGES NEEDED is the next round. After round 3
+# still says CHANGES NEEDED, the script stops: a human decides, not another loop.
 # Writes:  <spec-folder>/review.md (not committed: a human reads and commits it)
 # Exit:    0 = Verdict: APPROVE
 #          1 = Verdict: CHANGES NEEDED
@@ -18,11 +22,12 @@ set -uo pipefail
 
 stop() { echo "review: $1" >&2; exit 2; }
 
-base=main; check="scripts/check.sh"; spec=""
+base=main; check="scripts/check.sh"; spec=""; another=0; max_rounds=3
 while (( $# )); do
   case "$1" in
     --base) base="${2:-}"; shift 2 ;;
     --check) check="${2:-}"; shift 2 ;;
+    --another-round) another=1; shift ;;
     -*) stop "unknown option $1" ;;
     *) spec="${1%/}"; shift ;;
   esac
@@ -35,6 +40,17 @@ cd "$root" || stop "can't open $root."
 command -v claude >/dev/null || stop "claude not found."
 git rev-parse --verify -q "$base^{commit}" >/dev/null || stop "base '$base' not found."
 [[ -z "$(git status --porcelain)" ]] || stop "uncommitted changes. Commit first: the reviewer only reviews committed work."
+
+# Which round is this? A review after CHANGES NEEDED is the next round.
+round=1
+if [[ -f "$spec/review.md" ]]; then
+  prev_round="$(sed -n 's/^Round: *\([0-9]*\).*/\1/p' "$spec/review.md" | head -1)"
+  prev_verdict="$(grep -v '^[[:space:]]*$' "$spec/review.md" | tail -1 | sed 's/[[:space:]]*$//')"
+  [[ "$prev_verdict" == "Verdict: CHANGES NEEDED" ]] && round=$(( ${prev_round:-1} + 1 ))
+fi
+if (( round > max_rounds && ! another )); then
+  stop "$max_rounds reviews in a row said CHANGES NEEDED. A human decides now: read $spec/review.md, then fix it yourself, change the spec, or run again with --another-round."
+fi
 
 commits="$(git log --stat --format='%h %s' "$base"..HEAD)"
 [[ -n "$commits" ]] || stop "no commits on this branch since '$base': nothing to review."
@@ -76,7 +92,10 @@ review="$(printf '%s\n' "$prompt" | claude -p --agent reviewer --disallowedTools
 {
   echo "# Review: $spec"
   echo
-  echo "Reviewer: \`.claude/agents/reviewer.md\` (read-only). Branch $(git branch --show-current) at $(git rev-parse --short HEAD), base $base, $(date -u +%Y-%m-%dT%H:%MZ)."
+  echo "Reviewer: \`.claude/agents/reviewer.md\` (read-only). Branch $(git branch --show-current), base $base, $(date -u +%Y-%m-%dT%H:%MZ)."
+  echo
+  echo "Reviewed-commit: $(git rev-parse HEAD)"
+  echo "Round: $round"
   echo
   printf '%s\n' "$review"
 } >"$spec/review.md"
