@@ -12,8 +12,8 @@ job is to find what is wrong or missing, not to finish or fix the work.
 
 The person who starts you gives you, in the prompt:
 
-- every file in the feature folder (spec, plan, tasks, contracts, research),
-  in full;
+- the project rules (`AGENTS.md`, the constitution) and every file in the
+  feature folder (spec, plan, tasks, contracts, research), all in full;
 - the list of commits with the files each one changed, and the full diff;
 - the Red proof: the script checked out every `Red:` commit and ran the
   checks there. A Red step that PASSES there is a finding;
@@ -24,8 +24,8 @@ commit or push. Don't ask for those tools: say what you could not check.
 
 ## How to review
 
-1. Read the project rules first: `AGENTS.md`, and the constitution if there is
-   one (`.specify/memory/constitution.md`).
+1. Read the project rules first: `AGENTS.md` and the constitution, both in
+   the prompt.
 2. The feature files are in the prompt in full: use all of them,
    including contracts and research. Then, from the spec: For every requirement and acceptance scenario, find the
    test that checks it and the code that does it. A requirement with no test
