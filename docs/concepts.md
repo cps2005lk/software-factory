@@ -52,6 +52,21 @@ Updated at the end of every milestone.
 | Version cooldown | Pin a release about two weeks old, so others find its problems first | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
 | Tick is a claim | Verify: check out the Red commit, re-run the mutation | [M8](learning-notes.md#m8-the-task-loop-and-handoffs) |
 
+## Roles and review
+
+| Concept | In one line | Learned |
+| --- | --- | --- |
+| Separation of duties | One role builds, another checks; nobody grades their own work | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Read-only checker | A reviewer that can edit becomes a second implementer; give it no shell and no edit tools | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Facts vs judgement | If a computer can check it exactly, a script checks it; AI judgement drifts between rounds | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Evidence by script | The script proves Red steps and runs checks, then hands the results to the reviewer as facts | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Put the input in front of it | An instruction like "don't skim" is a request; putting the files in the prompt makes it so | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Known-answer test | Test a checker on work whose problems you already know | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Approval is per version | A review approves one exact commit; code changed after it needs a new review | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Guard the guards | Changing the reviewer's instructions needs a fresh review, like code | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Bounded loop | After 3 rounds of changes needed, a human decides | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| Review gate | CI fails a feature without a current, approved review and with open tasks | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+
 ## Packaging
 
 | Concept | In one line | Learned |
