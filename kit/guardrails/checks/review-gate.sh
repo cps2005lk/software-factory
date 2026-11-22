@@ -38,7 +38,9 @@ fi
 git rev-parse -q --verify "$base^{commit}" >/dev/null || stop "base '$base' not found, so nothing was checked."
 
 # Code = anything that is not a spec, a doc, Markdown, or the installed kit.
-code_only() { grep -vE '^(specs/|docs/|\.factory/)|\.md$' || true; }
+# Files under .claude/ (agent roles, settings) count as code even when they
+# are Markdown: weakening the reviewer's instructions needs a new review.
+code_only() { awk '!/^(specs|docs|\.factory)\// && !(/\.md$/ && !/^\.claude\//)'; }
 
 changed="$(git diff --name-only "$base"...HEAD)"
 features="$(sed -n 's|^specs/\([^/]*\)/.*|\1|p' <<<"$changed" | sort -u)"
