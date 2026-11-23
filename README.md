@@ -11,8 +11,8 @@ review and document software under rules I control.
 
 ## Status
 
-Milestone 9 (implementer and reviewer roles) done. The onboarding playbook covers
-discovery, the brain, the safety net, guardrails and the trust ladder; the
+Milestone 10 (first end-to-end feature and retro) done. The onboarding
+playbook covers discovery, the brain, the safety net, guardrails and the trust ladder; the
 task loop playbook covers spec, plan, tasks, handoffs and the review loop.
 The kit's checks run as git hooks, as Claude Code hooks before every
 command, and in CI on every pull request. Each agent session leaves a usage
@@ -22,6 +22,7 @@ file.
 
 - [What an agent can reach](docs/harness-map.md)
 - [Principles](docs/principles.md): the rules of a software factory, on one page
+- [Retro M10](docs/retros/m10-odd-one-out.md): the first real run, measured
 - [Concept index](docs/concepts.md): every concept in one line
 - [Learning notes](docs/learning-notes.md)
 - [Onboarding playbook](kit/playbooks/onboarding.md)
