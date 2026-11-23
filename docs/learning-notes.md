@@ -652,3 +652,11 @@ exactly its own bug.
 - The GitHub CLI's package server keeps only recent versions, so it couldn't
   be pinned; it now comes from GitHub's release, checked against its
   checksum.
+
+**Your own sessions.** Git used to take your full login from the Mac
+keychain, whatever token the session had. Now git asks `gh`, which follows
+the session's `GH_TOKEN`: the agent token when Claude is started with
+`claude-agent.sh`, your login in your own terminal. A guard asks before a
+GitHub write in a session without the agent token. Mistake on the way: my
+first check printed nothing, because macOS `sed` doesn't understand `\|`
+(the same macOS-versus-GNU trap as `\b` in M5).
