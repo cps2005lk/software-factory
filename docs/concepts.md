@@ -41,6 +41,11 @@ Updated at the end of every milestone.
 | `> Unverified:` | Mark every guess; a wrong fact is worse than a missing one | [M4](learning-notes.md#m4-the-brain) |
 | Evidence vs proof | Generated types suggested a migration ran; a read-only query proved it | [M4](learning-notes.md#m4-the-brain) |
 | ADR | One decision per file: context, decision, consequences, alternatives | [M4](learning-notes.md#m4-the-brain), [M5](learning-notes.md#m5-safety-nets) |
+| ADR status | Only `accepted` ADRs are followed; `proposed` is a draft, `replaced by NNNN` is history. An agent drafts, a person accepts | [Standards](learning-notes.md#after-m12-project-standards) |
+| Change by size | A small change to an ADR is edited in place (with a Changes line); a real change of the decision is a new ADR that replaces the old one | [Standards](learning-notes.md#after-m12-project-standards) |
+| Standards with IDs | Each project rule has an ID (`STD-012`), a level and a why, so a finding can name it, like a compiler error code | [Standards](learning-notes.md#after-m12-project-standards) |
+| Must vs should | Breaking a standard (must) is a defect, at least major. A guideline (should) may be broken with a reason | [Standards](learning-notes.md#after-m12-project-standards) |
+| Index, not manual | A root instruction file lists triggers and pointers ("you touch X → read Y"); detail lives elsewhere | [Standards](learning-notes.md#after-m12-project-standards) |
 | Personal vs project | How one person likes to work goes in their personal file, not the repo | [M4](learning-notes.md#m4-the-brain) |
 | Freshness rule | Code and its brain doc change in the same pull request | [M4](learning-notes.md#m4-the-brain) |
 
@@ -86,6 +91,9 @@ Updated at the end of every milestone.
 | Cost per job | Cheaper per token isn't cheaper per review when false findings cost human time | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
 | Hidden tests | A known answer for builders: acceptance tests the implementer never sees, so it meets the spec, not the tests | [M12](learning-notes.md#m12-which-model-should-implement) |
 | Test the agent's tests | Run the agent's own tests against the same broken versions; strong tests catch them all | [M12](learning-notes.md#m12-which-model-should-implement) |
+| Yardstick in the prompt | The reviewer gets the project's standards from the script, every time, and names each broken rule by its ID | [Standards](learning-notes.md#after-m12-project-standards) |
+| Use the built-ins | Claude Code has subagents, agent teams, worktrees and routines; build rules and proof on top, not a fleet of your own | [Standards](learning-notes.md#after-m12-project-standards) |
+| Human as orchestrator | In the kit a person starts each role and reads each handoff; scripts do fixed steps, checks refuse | [Standards](learning-notes.md#after-m12-project-standards) |
 
 ## Packaging
 

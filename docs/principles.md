@@ -1,7 +1,7 @@
 # Principles of a software factory
 
-The rules we follow, learned by building one, M0 to M11. Each has its reason
-and where we learned it. The how (scripts, settings) is in the
+The rules we follow, learned by building one, M0 to M12 and after. Each
+has its reason and where we learned it. The how (scripts, settings) is in the
 [playbooks](../kit/playbooks/); the full stories are in the
 [learning notes](learning-notes.md); every term is in the
 [concept index](concepts.md).
@@ -127,3 +127,20 @@ and where we learned it. The how (scripts, settings) is in the
 42. **The factory improves from its own use.** After each real run, a retro:
     keep, change, drop, each with evidence, and the rules change in the open.
     *(M10)*
+43. **Build on the tool, not around it.** When the agent tool gains a
+    feature (subagents, worktrees, teams), use it and keep the factory's
+    work to rules, gates and proof. Two team repos built a fleet of their
+    own; one later removed it. *(Standards)*
+
+## 7. Project standards
+
+44. **Standards and decisions are the yardstick, in files.** Coding
+    standards and guidelines live next to the architecture and the ADRs,
+    each rule with an ID and a why. The implementer reads them first; the
+    reviewer gets them in its prompt every time (principle 30). *(Standards)*
+45. **Only what is in force is followed.** An ADR has a status; only
+    `accepted` ones count, and a replaced one says so at the top. Small
+    changes in place, a real change of mind is a new decision. *(Standards)*
+46. **The code never changes the rules.** A person changes a standard or an
+    ADR, in its own pull request; an agent that changes one to let its
+    code pass has made a critical mistake. *(Standards)*
