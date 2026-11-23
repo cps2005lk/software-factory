@@ -72,6 +72,11 @@ Updated at the end of every milestone.
 | Proof environment | A proof must run where the real thing runs (dependencies included) | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
 | Chance-dependent test | A test that uses real randomness can miss a bug; feed it fixed numbers | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
 | Complete permissions | Smallest world, but complete: give a headless role every permission its job needs | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
+| Fleet comparison | Choose models per role by measured results, not by feel | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
+| One change at a time | Same task, prompt and checks; only the model differs | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
+| Planted bugs | A known answer: bugs you put in on purpose, each keeping the checks green | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
+| Ceiling effect | If everyone finds everything, the test can't tell them apart; add hard cases | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
+| Cost per job | Cheaper per token isn't cheaper per review when false findings cost human time | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
 
 ## Packaging
 
