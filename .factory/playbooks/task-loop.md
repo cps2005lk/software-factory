@@ -219,3 +219,33 @@ Chosen by a measured experiment, not by feel (M11,
 checks green), keep everything else the same, run each model at least twice,
 and count found, invented, tokens and time. Include some hard bugs: if every
 model finds everything, the test can't tell them apart.
+
+## Isolation: the box decides, not the words
+
+The agent hook reads command text, and text can be phrased around it.
+Isolation removes the secret from the agent's world instead. Every headless
+role run adds:
+
+```sh
+--settings .factory/adapters/claude/sandbox-agent.json
+```
+
+It turns on Claude Code's sandbox ([sandboxing](https://code.claude.com/docs/en/sandboxing),
+checked 2026-11-23): shell commands can't read `~/.ssh`, `~/.aws`,
+`~/.config/gh`, `~/.supabase` or the project's `.env` files, can't write
+outside the project, and have **no network**; the run refuses to start
+without the sandbox, and can't retry a command outside it. The sandbox covers
+shell commands only, so the same file also denies those paths to Claude's
+Read tool. `review.sh` always uses it, and refuses to run without it.
+
+- **Secrets out of reach first.** A token the agent doesn't need isn't kept
+  in the project (`.env.local`) or given to it. Agents get their own GitHub
+  token: only these repos, code and pull requests, no admin, no workflows.
+- **Prove it with a pair.** Run `.factory/guardrails/isolation-probe.sh
+  --control` outside the box (every forbidden thing must be reachable), then
+  the probe inside a sandboxed agent run (all of it blocked, the agent's real
+  work still possible). A probe blocked in both runs proves nothing. Test the
+  Read-tool rule on a decoy file, never on a real secret.
+- **Rung 3 needs proven isolation** (onboarding step 5).
+- **Unattended or parallel runs** need a full box: a dev container or cloud
+  sessions (not set up yet).
