@@ -660,3 +660,39 @@ the session's `GH_TOKEN`: the agent token when Claude is started with
 GitHub write in a session without the agent token. Mistake on the way: my
 first check printed nothing, because macOS `sed` doesn't understand `\|`
 (the same macOS-versus-GNU trap as `\b` in M5).
+
+## M12: Which model should implement?
+
+**Concept.** The M11 method for builders: the same task and fresh clone for
+every run (the agent box makes that easy), a known answer as **hidden tests**
+the agents never see, scoring by a script written before the runs, and two
+runs per model. Details: [experiment](experiments/m12-implementer-models.md).
+
+**Why it matters.** The implementer writes the code. Choosing its model by
+feel would waste money, or quality.
+
+**.NET comparison.** Acceptance tests kept by QA, not shown to the developer,
+so the code meets the spec instead of the tests.
+
+**What we found.** Haiku, Sonnet and Opus all passed 12 of 12 hidden tests,
+kept the `dayKey()` rule, made a real Red step, and wrote tests that caught
+all 4 broken versions. Sonnet used the fewest tokens and was fastest; Haiku
+wrote two to three times as much. Decision: Sonnet for small, well-specified
+tasks; Opus for features until a feature-sized test says otherwise.
+
+**Mistakes and surprises.**
+
+- **The ceiling effect again**, one milestone after writing it down. The
+  traps were real (a UTC version fails them), but too easy for every model.
+  Knowing a principle isn't the same as designing for it.
+- I added a second measure (each agent's tests against broken versions)
+  after seeing the first results. It was applied identically to all runs,
+  and said so in the write-up.
+- My scoring script first looked for the work under the branch name; the
+  bundle stores it as `HEAD`. Fixed before any result existed.
+- The box's outbox would have landed inside `.factory/` in a project, which
+  breaks the kit's checksums; it now goes to `~/factory-outbox`.
+
+**Still to practise.** A feature-sized, somewhat ambiguous task, with a
+control run without the factory's rules: does the factory, not the model,
+make the difference?

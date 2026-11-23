@@ -24,6 +24,7 @@ file.
 - [Principles](docs/principles.md): the rules of a software factory, on one page
 - [Retro M10](docs/retros/m10-odd-one-out.md): the first real run, measured
 - [Experiment M11](docs/experiments/m11-reviewer-models.md): which model should review
+- [Experiment M12](docs/experiments/m12-implementer-models.md): which model should implement
 - [Concept index](docs/concepts.md): every concept in one line
 - [Learning notes](docs/learning-notes.md)
 - [Onboarding playbook](kit/playbooks/onboarding.md)
