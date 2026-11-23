@@ -112,6 +112,16 @@ weight of the process to the risk.
    reasons and details go in `docs/brain/`. **Never create a `CLAUDE.md`**: it
    switches off `AGENTS.md`.
 
+   Write the first **standards and guidelines** in `docs/brain/standards/`
+   (each rule gets an ID like `STD-001`, a level `must` or `should`, and a
+   why; see its `README.md`). Record each big decision as an ADR in
+   `docs/brain/decisions/`. The implementer reads both before any code, and
+   the reviewer judges every change against them. You change them through a
+   pull request; agents only propose.
+
+   *Check:* `docs/brain/standards/` has at least one real rule, not only the
+   template's example.
+
 5. **Write `scripts/check.sh`** from `~/Dev/software-factory/kit/templates/check.sh.template`
    (your build, tests, lint, format, plus the two factory lines), and
    `chmod +x scripts/check.sh`.
@@ -179,7 +189,9 @@ full method is in `.factory/playbooks/onboarding.md` (after step 1 below).
    fail, how long a small task takes) so later claims can be compared.
 4. **The brain** (Part 2, step 4): move what's true into `AGENTS.md` and
    `docs/brain/`, link to existing docs instead of copying them, and delete
-   any `CLAUDE.md`.
+   any `CLAUDE.md`. Existing coding rules (a wiki page, an `.editorconfig`
+   comment, "how we do it here") become rules in `docs/brain/standards/`;
+   existing decisions become ADRs.
 5. **The safety net.** Before agents change an area, it needs tests that
    would notice a break. For code nobody fully remembers, write
    *characterization tests* (record what the code does today). Then break the
@@ -270,6 +282,15 @@ default (Opus) for features (from the factory's experiments, M11 and M12).
   branch run `~/Dev/software-factory/scripts/install.sh .`. If a hook or role
   changed, copy `settings.json` and the agents again: `scripts/check.sh`
   tells you ("missing or edited in .claude/settings.json").
+  - **From kit 0.15.0:** `docs/brain/conventions.md` became
+    `docs/brain/standards/`. Copy `README.md`, `coding.md` and `testing.md`
+    from `.factory/templates/brain/docs/brain/standards/`, move your rules
+    from `conventions.md` into them with IDs, and delete `conventions.md`.
+    Copy `decisions/README.md` too, and copy the agents again.
+- **Change a standard or an ADR** through a pull request, never inside a
+  feature's code change. Small change: edit in place. A real change of a
+  decision: a new ADR that replaces the old one
+  (`docs/brain/decisions/README.md`).
 - **Usage log:** each session writes `docs/usage/<date>-<session>.yml`.
   Commit them with your PRs, and add `task` and `corrections`.
   `.factory/usage/report.sh` shows what's missing.
