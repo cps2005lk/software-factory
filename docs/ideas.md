@@ -46,6 +46,13 @@ Status: `idea` → `next` → `doing` → `done` (with the PR link) or `dropped`
 | 20 | **MCP template with the same rules as the box:** an allow-list, no secrets in the file, and a probe. Every server adds reach. | 1 Smallest world | Teams A and B | M | idea |
 | 21 | **Ship the kit as a Claude Code plugin** instead of copying files with `install.sh`. Pin to a tag (not a commit SHA). | 16 Copies drift | Team B | L | idea |
 | 22 | **Cross-platform hooks** (Python standard library, or PowerShell) for the legacy .NET track on Windows. | Smallest world, but complete | Team B | L | idea |
+| 23 | **Test the agent files, not only the checks.** An eval corpus for `AGENTS.md`, role files and playbooks. Level A: a hard-won rule must still be in the file (delete it → red). Level B: a broken/fixed pair, so the reviewer must fail the broken one. | 19, 20 Test the tests; known answer | Team A (agent fleet) | M | idea |
+| 24 | **Empty-input probe for every check:** run each check on an empty target and prove it goes red. "Checked an empty room" must never pass. | 13 "Could not check" is a failure | Team A (agent fleet) | S | idea |
+| 25 | **Learning loop with a threshold:** a script finds repeated lessons in git history. A lesson becomes a rule only after 2 different incidents, and the rule names those incidents. | 9 Mark guesses; 17 Measure | Team A (agent fleet) | M | idea |
+| 26 | **Tripwires for unattended runs:** pause and ask the human when token spend passes a ceiling, or when the open-task queue keeps growing over K passes. Never continue past one. | 6, 15 A block is a stop sign | Team A (agent fleet) | M | idea |
+| 27 | **Three honest end states:** every task ends as `done` (through the gates), `blocked:needs-human` (with the exact ask) or `wontfix:<reason>`. Nothing else counts as finished. | 21 A "done" is a claim | Team A (agent fleet) | S | idea |
+| 28 | **The test writer is not the code writer:** a third role writes the failing tests from the spec, and the implementer only makes them pass. Today the implementer writes both. | Nobody grades their own work | Team A (agent fleet) | M | idea |
+| 29 | **File ownership map:** a file says which role or lane owns which paths. A hook refuses writes outside them, and a check proves no two lanes own the same path. Needed only if the kit runs agents in parallel. | 1 Smallest world | Team A (agent fleet) | L | idea |
 
 ## Not now
 
