@@ -12,6 +12,40 @@ Sources:
 - This repo holds no facts about those projects (AGENTS.md rule). Only the
   general patterns are written here.
 
+## Use Claude Code's own agent features; don't rebuild a fleet
+
+Team A built its own fleet machinery: an orchestrator, seats in tmux,
+worktree scripts, a watchdog. Claude Code now has most of this built in, so
+the kit uses the built-ins and adds only what they don't give: rules, gates,
+proof, isolation and measured model choice.
+
+- **Subagents:** own context, tools, model, permission mode and hooks. They
+  can run in the background and in parallel, and `isolation: worktree` gives
+  each one its own git worktree.
+  ([sub-agents](https://code.claude.com/docs/en/sub-agents))
+- **Agent teams:** a lead session, teammates, a shared task list and direct
+  messages. **Experimental**, off by default
+  (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`). Every teammate gets the lead's
+  permission mode and can't have its own, which goes against "smallest
+  world" (principle 1). No teams in headless runs (`claude -p`), so not in
+  the agent box. Tokens grow with the number of teammates.
+  ([agent teams](https://code.claude.com/docs/en/agent-teams))
+- **Worktrees, background agents, `/loop`, cloud routines** for parallel and
+  scheduled runs.
+  ([common workflows](https://code.claude.com/docs/en/common-workflows))
+
+Docs checked 2026-11-23 (the pages show no "last updated" date).
+
+What this means:
+
+- **Don't build:** orchestrator scripts, seat launchers, watchdog pollers,
+  worktree scripts. Use subagents with `isolation: worktree`.
+- **Keep building:** the kit's rules, gates and proofs, and the small ideas
+  below (end states, tripwires, evals, probes).
+- **Agent teams: wait, then measure.** When they leave "experimental", run
+  one experiment like M11/M12: a known answer, two runs each, compared with
+  subagents (principle 24).
+
 Status: `idea` → `next` → `doing` → `done` (with the PR link) or `dropped`
 (with the reason). Effort: S (an hour or two), M (a day), L (more).
 
@@ -51,11 +85,14 @@ Status: `idea` → `next` → `doing` → `done` (with the PR link) or `dropped`
 | 25 | **Learning loop with a threshold:** a script finds repeated lessons in git history. A lesson becomes a rule only after 2 different incidents, and the rule names those incidents. | 9 Mark guesses; 17 Measure | Team A (agent fleet) | M | idea |
 | 26 | **Tripwires for unattended runs:** pause and ask the human when token spend passes a ceiling, or when the open-task queue keeps growing over K passes. Never continue past one. | 6, 15 A block is a stop sign | Team A (agent fleet) | M | idea |
 | 27 | **Three honest end states:** every task ends as `done` (through the gates), `blocked:needs-human` (with the exact ask) or `wontfix:<reason>`. Nothing else counts as finished. | 21 A "done" is a claim | Team A (agent fleet) | S | idea |
-| 28 | **The test writer is not the code writer:** a third role writes the failing tests from the spec, and the implementer only makes them pass. Today the implementer writes both. | Nobody grades their own work | Team A (agent fleet) | M | idea |
-| 29 | **File ownership map:** a file says which role or lane owns which paths. A hook refuses writes outside them, and a check proves no two lanes own the same path. Needed only if the kit runs agents in parallel. | 1 Smallest world | Team A (agent fleet) | L | idea |
+| 28 | **The test writer is not the code writer:** a third role writes the failing tests from the spec, and the implementer only makes them pass. Today the implementer writes both. Built-in: just a third subagent file (`tester.md`) with its own tools and model. | Nobody grades their own work | Team A (agent fleet) | S | idea |
+| 29 | **File ownership per role:** each subagent may write only its own paths, enforced by a hook in that subagent's file (built-in per-subagent hooks), not a custom dispatcher. Needed only if the kit runs agents in parallel. | 1 Smallest world | Team A (agent fleet) | M | idea |
+| 30 | **Agent teams experiment,** once they are no longer experimental: the same known-answer task with subagents vs a team. Count found bugs, tokens and time, two runs each. | 24 Choose agents by measured results | Claude Code docs | M | idea |
 
 ## Not now
 
+- Our own fleet machinery (orchestrator, seats, watchdog, worktree scripts):
+  Claude Code has it built in (see the top of this file).
 - Many skills (70), fleets of parallel agents, agent-armed auto-merge. They
   fit large teams with many agents at once, and they go against "a human
   always merges" (principle 6).
