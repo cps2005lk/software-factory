@@ -631,3 +631,24 @@ to use it.
 **Still to do.** The owner moves the database token out of `.env.local` and
 creates a limited GitHub token for agents. A full box (dev container or
 cloud sessions) for unattended runs.
+
+**Phase 3: the box (Docker container).** The Mac sandbox looked complete
+until the probe found its missing wall: sandboxed commands could still read
+the Mac keychain. The container has no keychain at all. Probe pair: on the
+Mac, 5 of 5 forbidden things reachable; in the box, 5 of 5 blocked, while
+GitHub, npm and Claude's API work. The first real task in the box wrote and
+proved its tests, then could not push (the firewall had looked up GitHub's
+address once), and the box deleted itself with the work inside. Now the box
+allows GitHub's published ranges, refreshes the other names, and keeps the
+commits until the push is confirmed. The second run opened Brain Gym PR #12;
+I repeated its proof by breaking the code myself, and each test caught
+exactly its own bug.
+
+**More mistakes and surprises.**
+
+- A quiet build (`-q`) hid a 19-minute hang; only a build log showed the step.
+- The slim base image had no certificates, so packages came over plain HTTP,
+  which timed out. The full image plus HTTPS fixed both.
+- The GitHub CLI's package server keeps only recent versions, so it couldn't
+  be pinned; it now comes from GitHub's release, checked against its
+  checksum.

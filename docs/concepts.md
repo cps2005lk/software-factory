@@ -16,6 +16,9 @@ Updated at the end of every milestone.
 | Isolation | The box decides, not the words: secrets, network and home folder are not in the agent's world | [Isolation](learning-notes.md#after-m11-isolation) |
 | Probe pair | Reachable outside the box, blocked inside; a probe blocked in both proves nothing | [Isolation](learning-notes.md#after-m11-isolation) |
 | Decoy test | Test a secret-hiding rule on a fake secret, so a failing rule leaks nothing | [Isolation](learning-notes.md#after-m11-isolation) |
+| Weakest wall | A box is only as good as its weakest wall: probe every wall, both ways | [Isolation](learning-notes.md#after-m11-isolation) |
+| Agent box | A container with a fresh clone, a limited token and a firewall; the script pushes, a human merges | [Isolation](learning-notes.md#after-m11-isolation) |
+| Keep until handed over | Work stays safe (a git bundle) until the push is confirmed | [Isolation](learning-notes.md#after-m11-isolation) |
 | Leaked secret order | Replace the secret first, then clean history; deleting the file does nothing | [M0](learning-notes.md#m0-harness-engineering-and-blast-radius) |
 | Trust ladder | An agent starts read-only and earns more by proof: read-only → small PRs → features (5 PRs in a row with no correction to climb) | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
 | Trust per area | One agent can be on different rungs in different parts of a project; an area without mutation-checked tests stays read-only | [M6](learning-notes.md#m6-request-vs-enforcement-and-the-trust-ladder) |
