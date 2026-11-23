@@ -84,6 +84,8 @@ Updated at the end of every milestone.
 | Planted bugs | A known answer: bugs you put in on purpose, each keeping the checks green | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
 | Ceiling effect | If everyone finds everything, the test can't tell them apart; add hard cases | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
 | Cost per job | Cheaper per token isn't cheaper per review when false findings cost human time | [M11](learning-notes.md#m11-fleet-comparison-which-model-for-which-role) |
+| Hidden tests | A known answer for builders: acceptance tests the implementer never sees, so it meets the spec, not the tests | [M12](learning-notes.md#m12-which-model-should-implement) |
+| Test the agent's tests | Run the agent's own tests against the same broken versions; strong tests catch them all | [M12](learning-notes.md#m12-which-model-should-implement) |
 
 ## Packaging
 
