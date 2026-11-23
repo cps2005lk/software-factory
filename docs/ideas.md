@@ -94,9 +94,12 @@ Status: `idea` → `next` → `doing` → `done` (with the PR link) or `dropped`
 | 34 | **Legacy track: assert outcomes, not "page loaded".** Characterization tests (onboarding step 3) must check content and results, and a mutation check must prove the parity tests have teeth. | 19 Test the tests | Team B (`.agents`) | S | idea |
 | 35 | **Retire old agent guidance in the open:** a "SUPERSEDED, do not follow" banner at the top, a link to what replaces it, and which parts still hold. Delete it when nothing still holds. | 8 One fact, one place | Team B (`.agents`) | S | idea |
 | 36 | **No counts that drift in docs:** give the command that counts ("run this to see how many…"), not the number. | 9 A wrong fact is worse than a missing one | Team B (`.agents`) | S | idea |
-| 37 | **Project standards that agents follow every time** (see the plan below). | 7 Files are the truth; 11 A check refuses | Our own talk, 2026-11-23; team B's convention skills | M | next |
+| 37 | **Project standards that agents follow every time** (see the plan below). | 7 Files are the truth; 11 A check refuses | Our own talk, 2026-11-23; team B's convention skills | M | done ([#17](https://github.com/cps2005lk/software-factory/pull/17)) |
 
 ## Plan for idea 37: project standards
+
+Done in [#17](https://github.com/cps2005lk/software-factory/pull/17) (kit
+v0.15.0), merged 2026-11-23.
 
 Decided on 2026-11-23:
 
