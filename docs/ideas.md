@@ -94,6 +94,46 @@ Status: `idea` → `next` → `doing` → `done` (with the PR link) or `dropped`
 | 34 | **Legacy track: assert outcomes, not "page loaded".** Characterization tests (onboarding step 3) must check content and results, and a mutation check must prove the parity tests have teeth. | 19 Test the tests | Team B (`.agents`) | S | idea |
 | 35 | **Retire old agent guidance in the open:** a "SUPERSEDED, do not follow" banner at the top, a link to what replaces it, and which parts still hold. Delete it when nothing still holds. | 8 One fact, one place | Team B (`.agents`) | S | idea |
 | 36 | **No counts that drift in docs:** give the command that counts ("run this to see how many…"), not the number. | 9 A wrong fact is worse than a missing one | Team B (`.agents`) | S | idea |
+| 37 | **Project standards that agents follow every time** (see the plan below). | 7 Files are the truth; 11 A check refuses | Our own talk, 2026-11-23; team B's convention skills | M | next |
+
+## Plan for idea 37: project standards
+
+Decided on 2026-11-23:
+
+- **Scope:** every project that uses the kit. The kit gives the templates and
+  the rules; each project writes its own standards. (The kit holds no project
+  facts.)
+- **Enforcement: option A, files only.** The implementer must read the
+  standards, and `review.sh` puts them into the reviewer's fixed prompt.
+  Rejected for now: a skill that loads them (B), and linters for every rule
+  (C). Over time, each project moves a rule that a tool can check into
+  `check.sh` (for .NET: `.editorconfig` and analyzers).
+
+Shape:
+
+- **One place:** coding standards and guidelines live in `docs/brain/`, next
+  to `architecture.md` and `decisions/`. One file per topic. Each rule has an
+  ID (for example `STD-012`) and a "why".
+- **Read every time:** `implementer.md` reads the standards and the accepted
+  ADRs before any code. `review.sh` adds the standards to the reviewer's
+  prompt in full, like `AGENTS.md` today. The reviewer names each broken rule
+  by its ID.
+- **Change them in the open:** a human changes a standard or an ADR through a
+  PR. An agent may propose a change but never makes it to get its code to
+  pass. A standard that changes an architecture decision needs an ADR.
+
+Steps (one PR each, stop for review after each):
+
+1. Templates: the standards file(s) in `kit/templates/brain/docs/brain/`, the
+   brain README table, and the ADR rules for changing a decision.
+2. `implementer.md`: read the standards and ADRs before any code.
+3. `review.sh` and `reviewer.md`: the standards in the prompt, findings by
+   rule ID, with a test in `review.test.sh`.
+4. Docs: the task-loop playbook, user guide, `docs/concepts.md` and
+   `docs/principles.md`; a new kit version.
+
+Open question for step 1: how an ADR changes. Edit it in place, or write a
+new ADR that replaces the old one (the template's "replaced by NNNN" today)?
 
 ## Not now
 
