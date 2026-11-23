@@ -31,8 +31,8 @@ RUN arch="$(dpkg --print-architecture)" \
 RUN npm install -g @anthropic-ai/claude-code@2.1.330
 
 COPY allowed-hosts.txt /etc/factory/allowed-hosts.txt
-COPY firewall.sh probe.sh entry.sh /usr/local/bin/
-RUN chmod 755 /usr/local/bin/firewall.sh /usr/local/bin/probe.sh /usr/local/bin/entry.sh \
+COPY firewall.sh probe.sh entry.sh agent-task.sh /usr/local/bin/
+RUN chmod 755 /usr/local/bin/firewall.sh /usr/local/bin/probe.sh /usr/local/bin/entry.sh /usr/local/bin/agent-task.sh \
  && mkdir -p /work /home/node/.claude && chown -R node:node /work /home/node/.claude \
  && git config --system credential.https://github.com.helper "" \
  && git config --system --add credential.https://github.com.helper "!gh auth git-credential"
