@@ -5,6 +5,9 @@
 #        run.sh probe owner/repo   prove the box (forbidden blocked, the job works)
 #        run.sh login              log Claude Code in, inside the box (once)
 #        run.sh shell              a shell inside the box, for looking around
+#        run.sh outbox             copy unpushed work (git bundles) to ./outbox/
+#        run.sh task owner/repo branch "PR title" < prompt
+#                                   one agent task: clone, implement, check, push, draft PR
 #
 # The agent's GitHub token comes from the Mac keychain (item
 # "factory-agents-gh") and is handed over as an environment variable, never
@@ -21,6 +24,9 @@ case "${1:-}" in
   build) docker build -t "$image" "$here" ;;
   probe) GH_TOKEN="$(token)" docker run "${box[@]}" -e PROBE_REPO="${2:?usage: run.sh probe owner/repo}" "$image" probe.sh ;;
   login) docker run -it "${box[@]}" "$image" claude ;;
+  task) GH_TOKEN="$(token)" docker run -i "${box[@]}" -e GIT_NAME="$(git config user.name)" -e GIT_EMAIL="$(git config user.email)" \
+          -e TASK_TITLE="${4:?usage: run.sh task owner/repo branch title < prompt}" "$image" agent-task.sh "$2" "$3" ;;
+  outbox) mkdir -p ./outbox && docker run --rm -v factory-agent-home:/home/node --entrypoint sh "$image" -c 'cd /home/node/outbox 2>/dev/null && tar -cf - *.bundle 2>/dev/null' | tar -xf - -C ./outbox && ls ./outbox ;;
   shell) GH_TOKEN="$(token)" docker run -it "${box[@]}" "$image" bash ;;
-  *) sed -n 2,13p "$0"; exit 2 ;;
+  *) sed -n 2,16p "$0"; exit 2 ;;
 esac
