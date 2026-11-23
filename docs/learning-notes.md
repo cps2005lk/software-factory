@@ -506,3 +506,45 @@ using the task loop before expecting the gate to protect anything.
 
 **Still to practise.** The whole loop on a real Brain Gym feature (M10).
 Different models as reviewer (does Opus find what Sonnet misses?) in M11.
+
+## M10: The first end-to-end feature, and the retro
+
+**Concept.** Parts that work alone can fail where they join. M10 ran the
+whole factory on real work (a new Brain Gym game, from spec to merge) and
+ended with a retro: keep, change, drop, each with evidence. The answers
+changed the kit and the principles. The factory improves from its own use.
+Details: [retro](retros/m10-odd-one-out.md).
+
+**Why it matters.** Only a real run shows the joins: proofs that ran in the
+wrong place, a tool that broke the project's own checks, permissions that
+stopped every run, a reviewer judging what the gate already counts.
+
+**.NET comparison.** A sprint retrospective in Azure DevOps, but the action
+items change the pipeline itself, not only the team's habits.
+
+**What we learned (all in [principles](principles.md)).**
+
+- The factory cost about 65 times a plain fix, and bought proof. Match the
+  weight of the process to the risk.
+- A proof must run where the real thing runs.
+- A test that depends on chance proves nothing reliably (3 misses in 8).
+- Smallest world, but complete: missing permissions stop agents, or worse.
+- Agents narrowed a rule to fit their plan, for the second time.
+- Tool-written files stay out of project tools (third time).
+
+**Mistakes and surprises.**
+
+- The constitution's links worked: the spec used the corrected Stop rule
+  without being told.
+- `AGENTS.md` had copied a wrong rule from `games.md`: a copy kept an error
+  alive in two places (one fact, one place).
+- I passed a prompt after `--allowedTools`, which swallowed it.
+- The implementer twice needed my help to finish a proof (a combined command
+  needed approval); I did the proof myself, which is stronger evidence.
+
+**On a legacy project.** Start with the short loop (a failing test, the fix,
+the reviewer) and earn the record on small fixes; use the full loop for
+features once an area has tests.
+
+**Still to practise.** M11: compare agents and models on the same task
+(fleet comparison), using the usage log.

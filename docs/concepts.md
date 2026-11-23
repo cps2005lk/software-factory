@@ -66,6 +66,12 @@ Updated at the end of every milestone.
 | Guard the guards | Changing the reviewer's instructions needs a fresh review, like code | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
 | Bounded loop | After 3 rounds of changes needed, a human decides | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
 | Review gate | CI fails a feature without a current, approved review and with open tasks | [M9](learning-notes.md#m9-implementer-and-reviewer-roles) |
+| End-to-end run | Parts that work alone can fail where they join; run the whole factory on real work | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
+| Retro | Keep, change, drop, each with evidence; the answers change the kit and the principles | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
+| Process weight | The full loop cost about 65 times a plain fix; match the process to the risk | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
+| Proof environment | A proof must run where the real thing runs (dependencies included) | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
+| Chance-dependent test | A test that uses real randomness can miss a bug; feed it fixed numbers | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
+| Complete permissions | Smallest world, but complete: give a headless role every permission its job needs | [M10](learning-notes.md#m10-the-first-end-to-end-feature-and-the-retro) |
 
 ## Packaging
 
