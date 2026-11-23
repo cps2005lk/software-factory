@@ -548,3 +548,47 @@ features once an area has tests.
 
 **Still to practise.** M11: compare agents and models on the same task
 (fleet comparison), using the usage log.
+
+## M11: Fleet comparison (which model for which role)
+
+**Concept.** Choose agents by evidence. A fair comparison changes one thing
+(the model), keeps everything else fixed (task, prompt, checks), scores
+against a known answer (planted bugs), and repeats each run, because AI
+answers vary. Details: [experiment](experiments/m11-reviewer-models.md).
+
+**Why it matters.** Until M11 the reviewer was Sonnet by feel. Now it is
+Sonnet by evidence, with Opus for risky areas, and a method to check again
+when models change.
+
+**.NET comparison.** BenchmarkDotNet: the same code and input, several
+iterations, compare the results, not one lucky run.
+
+**What we found.**
+
+- All three models found all 4 planted bugs: the test was too easy to tell
+  them apart (a ceiling effect). Include hard bugs next time.
+- Haiku invented findings in both runs and wrote the most: cheaper per token
+  is not cheaper per review.
+- Opus rated the kids'-data bug critical both times; Sonnet said major.
+- Each model was consistent with itself across two runs.
+
+**Mistakes and surprises.**
+
+- **I built on a PR that wasn't merged.** "Merged" in chat was about the
+  factory's PR #10, not Brain Gym's PR #10, and I didn't check. The
+  experiment was still fair (every run had the same broken Red proof), and
+  all six reviewers flagged that as an unplanned fifth problem.
+- **Our own hook blocked me** when I wanted to copy reviews out and restore
+  them between runs. I stopped and asked; the owner chose a method where the
+  project's review was never touched. The hook also had a false positive
+  (copying *from* `review.md`), now fixed.
+- **Planting bugs was hard:** Brain Gym's tests caught both logic bugs, and
+  hiding them needed six test changes. The safety net works.
+- **macOS bash 3.2:** an empty array is an error under `set -u`; the
+  `--model` option uses the safe form.
+
+**On a legacy project.** Compare before you commit a team to a model:
+plant known bugs in a copy of a real change, and measure.
+
+**Still to practise.** Compare implementers (cost and corrections per
+task), with harder planted bugs.

@@ -1,6 +1,6 @@
 # Principles of a software factory
 
-The rules we follow, learned by building one, M0 to M10. Each has its reason
+The rules we follow, learned by building one, M0 to M11. Each has its reason
 and where we learned it. The how (scripts, settings) is in the
 [playbooks](../kit/playbooks/); the full stories are in the
 [learning notes](learning-notes.md); every term is in the
@@ -60,7 +60,7 @@ and where we learned it. The how (scripts, settings) is in the
     Passing tests on the first try is a reason to doubt them. *(M5, M7)*
 18. **Test the checker with a known answer:** give it work whose problems
     you already know. *(M9)*
-19. **A tick, a commit message or a green build is a claim.** Check the ones
+19. **A tick, a commit message, a green build or a "merged" in chat is a claim.** Check the ones
     that matter: did the tests actually run, did the Red commit really fail?
     *(M6, M8, M9)*
 20. **A proof must run where the real thing runs.** A Red step checked
@@ -68,48 +68,53 @@ and where we learned it. The how (scripts, settings) is in the
     *(M10)*
 21. **A test that depends on chance proves nothing reliably.** It missed a
     bug 3 times in 8; with fixed numbers it caught it 10 times in 10. *(M10)*
+22. **Choose agents by measured results on a known answer,** one change at a
+    time, at least two runs each. Cheaper per token is not cheaper per job:
+    invented findings cost a human's time. *(M11)*
+23. **A test that everyone passes can't tell them apart.** Include hard cases.
+    *(M11)*
 
 ## 5. Work: small loops, separate roles
 
-22. **Think on paper first:** spec, plan, tasks. Mistakes are cheapest
+24. **Think on paper first:** spec, plan, tasks. Mistakes are cheapest
     before code exists, and a human reviews them there. *(M8)*
-23. **One small task at a time,** each with a failing test, a commit and a
+25. **One small task at a time,** each with a failing test, a commit and a
     tick, so any session can stop and another continue. *(M8)*
-24. **Nobody grades their own work.** The builder and the checker are
+26. **Nobody grades their own work.** The builder and the checker are
     separate roles, with separate instructions, permissions and context.
     *(M9)*
-25. **Facts for the script, judgement for the AI.** If a computer can check
+27. **Facts for the script, judgement for the AI.** If a computer can check
     it exactly, a script checks it; AI judgement drifts. *(M9)*
-26. **Put the input in front of it.** An instruction like "read everything"
+28. **Put the input in front of it.** An instruction like "read everything"
     is a request; putting the content in the prompt makes it happen. *(M9)*
-27. **An approval belongs to an exact version.** Changed code needs a new
+29. **An approval belongs to an exact version.** Changed code needs a new
     review. *(M9)*
-28. **The rules of the process are part of the product.** Changing the
+30. **The rules of the process are part of the product.** Changing the
     factory, or a reviewer's instructions, needs at least as much review as
     changing code. *(M6, M9)*
-29. **Bound every loop.** After a few rounds without agreement, a human
+31. **Bound every loop.** After a few rounds without agreement, a human
     decides. *(M9)*
-30. **Agents narrow rules to fit their plan.** Seen twice ("allowed by
+32. **Agents narrow rules to fit their plan.** Seen twice ("allowed by
     Principle I"; test-first "for the logic"). Check every plan's rule check
     against the rule's own words. *(M8, M10)*
-31. **Match the weight of the process to the risk.** The full loop cost about
+33. **Match the weight of the process to the risk.** The full loop cost about
     65 times a plain fix, and bought proof. A small fix in a tested area
     gets a short loop; a feature or a risky area gets the full one. *(M3, M10)*
-32. **When a rule is wrong, change it in the open,** with a new version and
+34. **When a rule is wrong, change it in the open,** with a new version and
     a reason, never by quietly reading it differently. *(M8)*
 
 ## 6. The factory itself
 
-33. **The factory uses its own rules** (dogfooding): branches, pull
+35. **The factory uses its own rules** (dogfooding): branches, pull
     requests, checks, reviews. If a rule is too painful for us, it is too
     painful for a project. *(M6)*
-34. **The kit owns *when* checks run; the project owns *what* runs.** A
+36. **The kit owns *when* checks run; the project owns *what* runs.** A
     clear ownership line keeps both sides upgradable. *(M2, M6)*
-35. **Record honest gaps.** Every check, review and playbook says what it
+37. **Record honest gaps.** Every check, review and playbook says what it
     does *not* catch. Known gaps can be closed; hidden ones can't. *(all)*
-36. **Tool-written files stay out of project tools.** Each new tool brought
+38. **Tool-written files stay out of project tools.** Each new tool brought
     files the formatter wanted to change: the kit, Spec Kit, the review.
     *(M6, M10)*
-37. **The factory improves from its own use.** After each real run, a retro:
+39. **The factory improves from its own use.** After each real run, a retro:
     keep, change, drop, each with evidence, and the rules change in the open.
     *(M10)*
