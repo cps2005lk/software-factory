@@ -696,3 +696,49 @@ tasks; Opus for features until a feature-sized test says otherwise.
 **Still to practise.** A feature-sized, somewhat ambiguous task, with a
 control run without the factory's rules: does the factory, not the model,
 make the difference?
+
+## After M12: Project standards
+
+**Concept.** Each project keeps its coding standards and guidelines in
+`docs/brain/standards/`, next to the architecture and the ADRs. Every rule
+has an ID (`STD-012`), a level (`must` = standard, `should` = guideline) and
+a why. The implementer reads them before any code; `review.sh` puts them in
+the reviewer's prompt every time, and findings name the rule. ADRs have a
+status, and only `accepted` ones are followed. A small change is edited in
+place; a real change of mind is a new ADR that replaces the old one.
+
+**Why it matters.** Without this, "follow our standards" depends on the
+agent choosing to open a file. With the rules in the reviewer's prompt, a
+broken `must` rule blocks APPROVE every time (principle 30: put the input in
+front of it).
+
+**.NET comparison.** Rule IDs work like compiler error codes (`CS0168`):
+short, searchable, the same everywhere. An analyzer with
+`TreatWarningsAsErrors` is the strong version of a `must` rule; that is where
+a rule should end up once a tool can check it.
+
+**Where it came from.** A comparison with two large team repos (a Go + React
+repo and a .NET repo; details stay out of this repo). Both keep a short root
+file that points to rules elsewhere, and a decision log of ADRs. The .NET
+team loads its C# and test conventions as skills. The Go team built its own
+agent fleet (orchestrator, seats, a red-team for plans); the .NET team copied
+it and later removed the machinery. Claude Code now has subagents, worktrees
+and agent teams built in, so the kit builds rules and proof on top
+(principle 43). The ideas are tracked in `docs/ideas.md`.
+
+**Mistakes and surprises.**
+
+- I said I had compared the repos when I had read only parts of some
+  folders (the fleet tooling, `.agents`, `.claude`). Each time you asked
+  "have you read …?", the honest answer was "partly". Say what was read and
+  what wasn't, up front.
+- Twice I added table rows above the row they should follow. Check the
+  order after an edit, not only that the edit applied.
+- A test that "leaves out" non-accepted ADRs passed before the code
+  existed, because nothing was listed at all. A mutation (removing the
+  status filter) proved it has teeth.
+
+**Still to practise.** A known-answer test: plant a `must` violation and an
+ADR violation in a feature, and check that the reviewer names both by ID.
+Also: does the implementer really read the standards when nothing forces
+it?
