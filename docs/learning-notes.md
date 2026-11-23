@@ -592,3 +592,42 @@ plant known bugs in a copy of a real change, and measure.
 
 **Still to practise.** Compare implementers (cost and corrections per
 task), with harder planted bugs.
+
+## After M11: Isolation
+
+**Concept.** The box decides, not the words. Our agent hook reads command
+text; isolation removes secrets, the network and the home folder from the
+agent's world. Claude Code's sandbox (macOS Seatbelt) does this for shell
+commands, and deny rules do it for the Read tool.
+
+**Why it matters.** Before this, agents ran with my GitHub login (enough to
+turn off branch protection) and could read the live database token in
+`.env.local`. Only a written rule and an "ask" stood in the way.
+
+**.NET comparison.** Running a service under a low-privilege account with no
+access to the production connection string, instead of trusting the code not
+to use it.
+
+**What we proved, as a pair.**
+
+| | Outside the box (control) | Inside the box |
+| --- | --- | --- |
+| `.env.local`, GitHub config and token | reachable | blocked |
+| Unknown website, GitHub API | reachable | blocked |
+| Writing in the home folder | reachable | blocked |
+| Writing in the project, running programs | works | works |
+| Read tool on a decoy `.env.local` | read | refused |
+
+**Mistakes and surprises.**
+
+- My first probe **skipped** `.env.local` because, inside the box, the file
+  looked missing. A skipped check must never look like a pass: now there's
+  no skip, and the control run proves each secret exists.
+- The reviewer's Read tool could have read `.env.local`. `review.sh` now
+  always passes the sandbox settings and refuses to run without them.
+- The Read-tool rule was tested on a decoy, never on the real token: if the
+  rule had failed, the test itself would have leaked the secret.
+
+**Still to do.** The owner moves the database token out of `.env.local` and
+creates a limited GitHub token for agents. A full box (dev container or
+cloud sessions) for unattended runs.

@@ -14,107 +14,110 @@ and where we learned it. The how (scripts, settings) is in the
 2. **Smallest world, but complete.** Give a role every permission its job
    needs, up front. A missing one makes an agent stop, or worse, look for
    another way. *(M9, M10)*
-3. **Trust is earned, per area, and can be lost.** Read-only first, then
+3. **The box decides, not the words.** A hook that reads command text can be
+   talked around; a secret that isn't in the agent's world can't be reached.
+   Proven with a pair: reachable outside the box, blocked inside. *(Isolation)*
+4. **Trust is earned, per area, and can be lost.** Read-only first, then
    small changes, then features, each rung proven by a record (5 PRs in a
    row with no correction). One serious slip drops that area one rung.
    *(M6)*
-4. **Some things stay human on every rung:** merging, repo settings,
+5. **Some things stay human on every rung:** merging, repo settings,
    deploying, the live database, secrets, installing software. *(M6)*
 
 ## 2. Knowledge: write it down, once, and keep it true
 
-5. **Files are the truth, not memory.** Agents forget everything between
+6. **Files are the truth, not memory.** Agents forget everything between
    sessions. What isn't in a file doesn't exist for the next agent,
    including instructions given only in chat. *(M4, M8)*
-6. **One fact, one place.** A copy is a fact nobody updates. Link instead.
+7. **One fact, one place.** A copy is a fact nobody updates. Link instead.
    *(M4, M7, M8)*
-7. **Mark guesses.** A wrong fact is worse than a missing one. Evidence is
+8. **Mark guesses.** A wrong fact is worse than a missing one. Evidence is
    not proof: check before you write "confirmed". *(M4)*
-8. **Code and its docs change together**, in the same pull request. *(M4)*
+9. **Code and its docs change together**, in the same pull request. *(M4)*
 
 ## 3. Enforcement: a rule that matters is a lock, not a request
 
-9. **A written rule asks; a check refuses.** Agents forget, misread and
+10. **A written rule asks; a check refuses.** Agents forget, misread and
    reinterpret rules. Anything that must not happen needs a check. *(M1, M6)*
-10. **Layer the locks:** a rule explains, an agent hook stops the command
+11. **Layer the locks:** a rule explains, an agent hook stops the command
    before it runs, a git hook stops accidents, a required server check stops
    decisions. Each catches what the previous one misses. *(M6, M7)*
-11. **"Could not check" is a failure, never a pass.** A missing hook,
+12. **"Could not check" is a failure, never a pass.** A missing hook,
     folder, tool or verdict must block, loudly. Silent passes were our worst
     bugs. *(M1, M2, M6, M7)*
-12. **Block what must never happen; ask only where a quick look is enough.**
+13. **Block what must never happen; ask only where a quick look is enough.**
     A permission prompt is only as strong as the attention of the person
     answering it. *(M7)*
-13. **A block is a stop sign.** An agent that is refused says so and stops;
+14. **A block is a stop sign.** An agent that is refused says so and stops;
     it never looks for another way around. *(M7, M9)*
-14. **Copies drift; check them.** When a project holds a copy of the
+15. **Copies drift; check them.** When a project holds a copy of the
     factory's settings, a check fails as soon as they differ. *(M7)*
 
 ## 4. Proof: don't trust, verify
 
-15. **Measure; don't guess.** A baseline first, so every later claim can be
+16. **Measure; don't guess.** A baseline first, so every later claim can be
     compared with it. *(M3, M7)*
-16. **A test must fail before it can prove anything,** and fail for the
+17. **A test must fail before it can prove anything,** and fail for the
     right reason. Red before Green, every time. *(M5, M8)*
-17. **Test the tests:** break the code on purpose; a test must notice.
+18. **Test the tests:** break the code on purpose; a test must notice.
     Passing tests on the first try is a reason to doubt them. *(M5, M7)*
-18. **Test the checker with a known answer:** give it work whose problems
+19. **Test the checker with a known answer:** give it work whose problems
     you already know. *(M9)*
-19. **A tick, a commit message, a green build or a "merged" in chat is a claim.** Check the ones
+20. **A tick, a commit message, a green build or a "merged" in chat is a claim.** Check the ones
     that matter: did the tests actually run, did the Red commit really fail?
     *(M6, M8, M9)*
-20. **A proof must run where the real thing runs.** A Red step checked
+21. **A proof must run where the real thing runs.** A Red step checked
     without its dependencies "fails" for the wrong reason and proves nothing.
     *(M10)*
-21. **A test that depends on chance proves nothing reliably.** It missed a
+22. **A test that depends on chance proves nothing reliably.** It missed a
     bug 3 times in 8; with fixed numbers it caught it 10 times in 10. *(M10)*
-22. **Choose agents by measured results on a known answer,** one change at a
+23. **Choose agents by measured results on a known answer,** one change at a
     time, at least two runs each. Cheaper per token is not cheaper per job:
     invented findings cost a human's time. *(M11)*
-23. **A test that everyone passes can't tell them apart.** Include hard cases.
+24. **A test that everyone passes can't tell them apart.** Include hard cases.
     *(M11)*
 
 ## 5. Work: small loops, separate roles
 
-24. **Think on paper first:** spec, plan, tasks. Mistakes are cheapest
+25. **Think on paper first:** spec, plan, tasks. Mistakes are cheapest
     before code exists, and a human reviews them there. *(M8)*
-25. **One small task at a time,** each with a failing test, a commit and a
+26. **One small task at a time,** each with a failing test, a commit and a
     tick, so any session can stop and another continue. *(M8)*
-26. **Nobody grades their own work.** The builder and the checker are
+27. **Nobody grades their own work.** The builder and the checker are
     separate roles, with separate instructions, permissions and context.
     *(M9)*
-27. **Facts for the script, judgement for the AI.** If a computer can check
+28. **Facts for the script, judgement for the AI.** If a computer can check
     it exactly, a script checks it; AI judgement drifts. *(M9)*
-28. **Put the input in front of it.** An instruction like "read everything"
+29. **Put the input in front of it.** An instruction like "read everything"
     is a request; putting the content in the prompt makes it happen. *(M9)*
-29. **An approval belongs to an exact version.** Changed code needs a new
+30. **An approval belongs to an exact version.** Changed code needs a new
     review. *(M9)*
-30. **The rules of the process are part of the product.** Changing the
+31. **The rules of the process are part of the product.** Changing the
     factory, or a reviewer's instructions, needs at least as much review as
     changing code. *(M6, M9)*
-31. **Bound every loop.** After a few rounds without agreement, a human
+32. **Bound every loop.** After a few rounds without agreement, a human
     decides. *(M9)*
-32. **Agents narrow rules to fit their plan.** Seen twice ("allowed by
+33. **Agents narrow rules to fit their plan.** Seen twice ("allowed by
     Principle I"; test-first "for the logic"). Check every plan's rule check
     against the rule's own words. *(M8, M10)*
-33. **Match the weight of the process to the risk.** The full loop cost about
+34. **Match the weight of the process to the risk.** The full loop cost about
     65 times a plain fix, and bought proof. A small fix in a tested area
     gets a short loop; a feature or a risky area gets the full one. *(M3, M10)*
-34. **When a rule is wrong, change it in the open,** with a new version and
+35. **When a rule is wrong, change it in the open,** with a new version and
     a reason, never by quietly reading it differently. *(M8)*
 
 ## 6. The factory itself
 
-35. **The factory uses its own rules** (dogfooding): branches, pull
+36. **The factory uses its own rules** (dogfooding): branches, pull
     requests, checks, reviews. If a rule is too painful for us, it is too
     painful for a project. *(M6)*
-36. **The kit owns *when* checks run; the project owns *what* runs.** A
+37. **The kit owns *when* checks run; the project owns *what* runs.** A
     clear ownership line keeps both sides upgradable. *(M2, M6)*
-37. **Record honest gaps.** Every check, review and playbook says what it
+38. **Record honest gaps.** Every check, review and playbook says what it
     does *not* catch. Known gaps can be closed; hidden ones can't. *(all)*
-38. **Tool-written files stay out of project tools.** Each new tool brought
+39. **Tool-written files stay out of project tools.** Each new tool brought
     files the formatter wanted to change: the kit, Spec Kit, the review.
     *(M6, M10)*
-39. **The factory improves from its own use.** After each real run, a retro:
+40. **The factory improves from its own use.** After each real run, a retro:
     keep, change, drop, each with evidence, and the rules change in the open.
     *(M10)*
