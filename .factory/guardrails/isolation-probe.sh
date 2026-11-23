@@ -30,6 +30,12 @@ readable() { cat "$1" >/dev/null; }
 expect "read the project's .env.local" "$forbidden" readable .env.local
 expect "read the GitHub CLI config" "$forbidden" ls "$HOME/.config/gh"
 expect "get the GitHub login token" "$forbidden" gh auth token
+keychain() { command -v security >/dev/null && security find-generic-password -s "gh:github.com" -w >/dev/null; }
+if command -v security >/dev/null; then
+  expect "read a login from the macOS keychain" "$forbidden" keychain
+else
+  echo "ok    read a login from the macOS keychain: BLOCKED (no keychain here)"
+fi
 
 # Must be blocked: the network and writing outside the project
 expect "reach an unknown website" "$forbidden" curl -sS -m 8 -o /dev/null https://example.com
