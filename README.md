@@ -20,6 +20,7 @@ file.
 
 ## Read next
 
+- [User guide](docs/user-guide.md): start here if you are new: set up, new app, existing app, everyday work, the box
 - [What an agent can reach](docs/harness-map.md)
 - [Principles](docs/principles.md): the rules of a software factory, on one page
 - [Retro M10](docs/retros/m10-odd-one-out.md): the first real run, measured
