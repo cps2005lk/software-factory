@@ -249,3 +249,27 @@ Read tool. `review.sh` always uses it, and refuses to run without it.
 - **Rung 3 needs proven isolation** (onboarding step 5).
 - **Unattended or parallel runs** need a full box: a dev container or cloud
   sessions (not set up yet).
+
+## The agent box (unattended runs)
+
+For runs nobody watches, the agent works in a Docker container:
+`.factory/container/run.sh` (build, probe, login, task, outbox).
+
+- **What's inside:** a fresh clone of the repo, the agent's limited GitHub
+  token (handed over from the Mac keychain, never written to a file), Claude
+  Code with its own login (in a Docker volume). No Mac keychain, no home
+  folder, no host files, no Docker socket.
+- **Network:** a firewall allows only Claude's API, GitHub (its published
+  address ranges) and npm. It checks itself at every start, and the box
+  refuses to start if an unknown site gets through.
+- **Who does what:** the agent writes and proves the change; the script
+  checks the facts (commits exist, nothing uncommitted, `scripts/check.sh`
+  green), pushes the branch and opens a **draft** PR. A human reads every
+  line and merges.
+- **Never lose work:** until the push works, the commits are kept as a git
+  bundle in the volume; `run.sh outbox` copies them to the Mac.
+- **Prove the box after every rebuild:** `run.sh probe owner/repo`, with the
+  control run of `probe.sh --control` on the Mac. A rebuilt box is a new box.
+- **Pinned with a cooldown:** the base image by digest, Claude Code and the
+  GitHub CLI by version (the CLI from its release, checked against its
+  published checksum).
