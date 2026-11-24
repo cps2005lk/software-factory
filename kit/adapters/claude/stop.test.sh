@@ -64,6 +64,24 @@ echo six >e.txt && git add -A && git commit -q -m "more"
 git rm -q scripts/check.sh && git commit -q -m "no checks"
 [[ "$(stop)" == 2 ]] && grep -q "could not" "$tmp/err" && pass "no scripts/check.sh: could not check, sent back" || fail "missing check.sh" "$(cat "$tmp/err")"
 
+# The Stop command in settings.json, run the way Claude Code runs it
+here="$(cd "$(dirname "$script")" && pwd)"
+hook_cmd="$(jq -r '.hooks.Stop[0].hooks[0].command // empty' "$here/settings.json")"
+if [[ -z "$hook_cmd" ]]; then
+  fail "settings.json has a Stop hook"
+else
+  pass "settings.json has a Stop hook"
+  echo seven >>a.txt
+  printf '{"stop_hook_active":false}' | CLAUDE_PROJECT_DIR="$p" bash -c "$hook_cmd" >/dev/null 2>"$tmp/err"
+  [[ $? == 0 ]] && grep -q "stop.sh" "$tmp/err" && pass "no .factory on this branch: lets it stop, says why (no loop)" || fail "no .factory" "$(cat "$tmp/err")"
+  mkdir -p "$p/.factory" && cp -R "$here/../../." "$p/.factory/"
+  printf '{"stop_hook_active":false}' | CLAUDE_PROJECT_DIR="$p" bash -c "$hook_cmd" >/dev/null 2>&1
+  [[ $? == 2 ]] && pass "with .factory: uncommitted change sends it back" || fail "with .factory: sends back"
+  t="$(jq -r '.hooks.Stop[0].hooks[0].timeout // 0' "$here/settings.json")"
+  (( t >= 120 )) && pass "the Stop hook has time for check.sh (timeout $t s)" || fail "Stop timeout" "timeout $t"
+  rm -rf "$p/.factory"; git checkout -q -- a.txt
+fi
+
 # Outside a git repo
 mkdir -p "$tmp/plain"
 printf '{"stop_hook_active":false}' | CLAUDE_PROJECT_DIR="$tmp/plain" "$script" >/dev/null 2>&1
