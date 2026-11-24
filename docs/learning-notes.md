@@ -738,7 +738,17 @@ and agent teams built in, so the kit builds rules and proof on top
   existed, because nothing was listed at all. A mutation (removing the
   status filter) proved it has teeth.
 
-**Still to practise.** A known-answer test: plant a `must` violation and an
-ADR violation in a feature, and check that the reviewer names both by ID.
-Also: does the implementer really read the standards when nothing forces
-it?
+**The known-answer test** ([experiment](experiments/standards-known-answer.md),
+2026-11-24). Three planted mistakes in Brain Gym, two runs each: the
+reviewer named the broken rule by its ID every time, including one that only
+the standards file states. Two weaknesses: it never opened an ADR from the
+list (it caught the Stop mistake through `AGENTS.md`), and once it rated a
+broken `must` rule as minor, against its own instructions. Lesson: a list
+is a request, the content in the prompt is a fact; and a severity rule the
+AI applies is judgement, so the script must check it (ideas 38 and 39).
+The agent hook also blocked me from moving a `review.md` to start a clean
+run. It was right; the owner moved it, and the next runs used fresh
+checkouts.
+
+**Still to practise.** Does the implementer really read the standards when
+nothing forces it?
