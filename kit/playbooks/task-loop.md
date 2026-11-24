@@ -165,7 +165,8 @@ both roles.
    and major findings, and the human runs the review again.
 5. **Round limit.** After 3 reviews in a row say CHANGES NEEDED, `review.sh`
    stops: a human decides (fix it, change the spec, or allow one more round
-   with `--another-round`). Endless ping-pong helps nobody.
+   with `--another-round`). Endless ping-pong helps nobody. Only a human
+   runs `--another-round`: the agent hook blocks it for agents.
 
 ### Enforcement: ignored, faked or missing reviews
 
