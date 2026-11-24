@@ -96,6 +96,7 @@ Updated at the end of every milestone.
 | List vs content | Given a list of ADRs, the reviewer opened none; content in the prompt is read, a list is a request | [Standards](learning-notes.md#after-m12-project-standards) |
 | Role command | `/review-pr <N>`: a skill only a human can start, which runs a fixed script; the human stays the orchestrator, with less typing | [Standards](learning-notes.md#after-m12-project-standards) |
 | Name clash | A project skill doesn't replace a built-in alias, so `/review` would run Claude's own `/code-review`: check the docs before naming a command | [Standards](learning-notes.md#after-m12-project-standards) |
+| Stop hook | At the end of each reply, unfinished work (uncommitted changes, commits on `main`, failing checks) sends the agent back once; a green commit is remembered, so most replies cost nothing | [Standards](learning-notes.md#after-m12-project-standards) |
 | Use the built-ins | Claude Code has subagents, agent teams, worktrees and routines; build rules and proof on top, not a fleet of your own | [Standards](learning-notes.md#after-m12-project-standards) |
 | Human as orchestrator | In the kit a person starts each role and reads each handoff; scripts do fixed steps, checks refuse | [Standards](learning-notes.md#after-m12-project-standards) |
 

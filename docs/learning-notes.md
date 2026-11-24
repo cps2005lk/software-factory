@@ -759,5 +759,13 @@ project skill doesn't replace an alias. Mutations caught two weak tests on
 the way: one read a file left over from an earlier run, one searched line
 by line for words split over two lines.
 
+**The Stop hook (top-10 idea 1).** At the end of a reply, unfinished work
+sends the agent back once. Two design points: the slow check (`check.sh`)
+runs only on new, unpushed commits, and only when nothing else is wrong,
+and a green commit is remembered in `.git/`, so a normal reply costs
+nothing; and `stop_hook_active` lets the second stop through, so it can't
+loop. A test was wrong first: it "removed" `check.sh` by moving it, which
+is itself an uncommitted change.
+
 **Still to practise.** Does the implementer really read the standards when
 nothing forces it?
