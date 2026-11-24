@@ -20,7 +20,7 @@ else
   grep -qx 'allowed-tools: Bash(.factory/adapters/claude/review-pr.sh \*)' <<<"$front" && pass "review-pr: may run only review-pr.sh without asking" || fail "review-pr: allowed-tools is review-pr.sh only"
   grep -q '\.factory/adapters/claude/review-pr\.sh \$ARGUMENTS' <<<"$body" && pass "review-pr: runs review-pr.sh with the human's arguments" || fail "review-pr: runs review-pr.sh \$ARGUMENTS"
   grep -q 'review\.sh specs' <<<"$body" && fail "review-pr: never runs review.sh itself" || pass "review-pr: never runs review.sh itself"
-  grep -qi 'never.*--another-round' <<<"$body" && pass "review-pr: says it never uses --another-round" || fail "review-pr: says it never uses --another-round"
+  tr '\n' ' ' <<<"$body" | grep -qiE 'never[^.]*--another-round' && pass "review-pr: says it never uses --another-round" || fail "review-pr: says it never uses --another-round"
 fi
 
 echo
