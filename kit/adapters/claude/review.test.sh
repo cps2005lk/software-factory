@@ -147,7 +147,7 @@ tail -1 specs/002-y/review.md | grep -qx "Verdict: CHANGES NEEDED" && grep -q "f
 verdict_case "$(row "Breaks ADR 0001: x")" "Verdict: APPROVE" 1 "APPROVE + an accepted ADR in the findings: CHANGES NEEDED"
 verdict_case "$(row "Breaks STD-102: x")" "Verdict: APPROVE" 0 "a should rule doesn't block APPROVE"
 verdict_case "$(row "Breaks ADR 0002: x")" "Verdict: APPROVE" 0 "a proposed ADR doesn't block APPROVE"
-verdict_case "$(row "Small naming nit" "Checked STD-101: fine.")" "Verdict: APPROVE" 0 "a must rule outside the findings doesn't block"
+verdict_case "$(row "Small naming nit" "| 2 | Checked STD-101 and ADR 0001: fine |")" "Verdict: APPROVE" 0 "a must rule outside the findings doesn't block"
 verdict_case "$(row "Breaks STD-1010: x")" "Verdict: APPROVE" 0 "STD-1010 is not STD-101"
 verdict_case "$(row "Breaks STD-101: x")" "Verdict: CHANGES NEEDED" 1 "CHANGES NEEDED stays as it is"
 ! grep -q "findings name" specs/002-y/review.md && pass "no note when the reviewer already blocked" || fail "no note when blocked"
