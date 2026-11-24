@@ -158,6 +158,9 @@ both roles.
 
 1. The implementer finishes the tasks (or a checkpoint).
 2. A human runs `review.sh specs/<feature>`. It refuses uncommitted work.
+   Or by PR number: `review-pr.sh <N>` finds the PR's spec folder and base
+   branch, checks that the checkout is that PR (same branch, same last
+   commit as on GitHub), then runs `review.sh`. It never switches branches.
 3. The verdict is the last line: `Verdict: APPROVE` (exit 0) or
    `Verdict: CHANGES NEEDED` (exit 1). No verdict means the review is not
    complete (exit 2).
