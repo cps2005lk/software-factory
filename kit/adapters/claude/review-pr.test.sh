@@ -47,7 +47,7 @@ called() { [[ -e "$tmp/review-args" ]]; }
 [[ "$(run 2)" == 0 ]] && called && pass "PR 2: runs review.sh" || fail "runs review.sh" "$(cat "$tmp/out")"
 [[ "$(tr '\n' ' ' <"$tmp/review-args")" == "--base main specs/001-x " ]] && pass "with the PR's base and its spec folder" || fail "args" "$(tr '\n' ' ' <"$tmp/review-args")"
 for form in "#2" "PR#2" "pr#2" "PR 2"; do
-  run $form >/dev/null; [[ "$(cat "$tmp/gh-pr")" == 2 ]] || fail "reads the number from '$form'"
+  rm -f "$tmp/gh-pr"; run $form >/dev/null; [[ "$(cat "$tmp/gh-pr" 2>/dev/null)" == 2 ]] || fail "reads the number from '$form'"
 done && pass "reads 2, #2, PR#2, pr#2 and 'PR 2'"
 FAKE_BASE=develop; export FAKE_BASE
 run 2 >/dev/null; grep -qx develop "$tmp/review-args" && pass "a PR into another branch is compared with that branch" || fail "other base"
