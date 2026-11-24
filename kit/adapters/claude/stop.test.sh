@@ -45,6 +45,7 @@ git reset -q && git checkout -q -- a.txt
 # (a) commits on main that no remote has
 echo three >b.txt && git add -A && git commit -q -m "on main"
 [[ "$(stop)" == 2 ]] && grep -q "main" "$tmp/err" && grep -q "branch" "$tmp/err" && pass "commit on main, not pushed: sent back" || fail "unpushed main" "$(cat "$tmp/err")"
+[[ "$(runs)" == 0 ]] && pass "something else is wrong: check.sh isn't run (fix that first)" || fail "no check when sent back already" "runs $(runs)"
 git reset -q --hard origin/main
 
 # (c) check.sh on new, unpushed commits
@@ -60,9 +61,8 @@ git push -q -u origin feature 2>/dev/null
 before="$(runs)"
 [[ "$(stop)" == 0 && "$(runs)" == "$before" ]] && pass "pushed branch: check.sh not run (pre-push ran it)" || fail "pushed branch" "runs $(runs)"
 echo six >e.txt && git add -A && git commit -q -m "more"
-mv scripts/check.sh "$tmp/check.sh.away"
+git rm -q scripts/check.sh && git commit -q -m "no checks"
 [[ "$(stop)" == 2 ]] && grep -q "could not" "$tmp/err" && pass "no scripts/check.sh: could not check, sent back" || fail "missing check.sh" "$(cat "$tmp/err")"
-mv "$tmp/check.sh.away" scripts/check.sh
 
 # Outside a git repo
 mkdir -p "$tmp/plain"
