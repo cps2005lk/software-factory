@@ -750,5 +750,14 @@ The agent hook also blocked me from moving a `review.md` to start a clean
 run. It was right; the owner moved it, and the next runs used fresh
 checkouts.
 
+**Role commands (idea 31).** `/review-pr <N>` lets the human order a review
+in Claude instead of typing the script's path. Facts stay in a script
+(`review-pr.sh` checks the checkout is the PR, at the same commit as on
+GitHub); the skill only starts it and reports. The name came from a check
+of the docs: `/review` is the alias of the built-in `/code-review`, and a
+project skill doesn't replace an alias. Mutations caught two weak tests on
+the way: one read a file left over from an earlier run, one searched line
+by line for words split over two lines.
+
 **Still to practise.** Does the implementer really read the standards when
 nothing forces it?

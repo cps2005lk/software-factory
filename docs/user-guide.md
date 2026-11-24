@@ -137,9 +137,10 @@ weight of the process to the risk.
 
 7. **Turn on the agent hook and the roles:**
    ```sh
-   mkdir -p .claude/agents
+   mkdir -p .claude/agents .claude/skills
    cp .factory/adapters/claude/settings.json .claude/settings.json
    cp .factory/adapters/claude/agents/*.md .claude/agents/
+   cp -R .factory/adapters/claude/skills/. .claude/skills/
    ```
    *Check:* in a Claude session, ask it to run `git push --dry-run --no-verify`:
    it is blocked with "factory: risky-command: blocked".
@@ -238,10 +239,16 @@ pull request, always a human merge.
    findings on paper, in a **fresh** session.
 5. Build: `claude-agent --agent implementer`, then "Do the tasks in
    tasks.md". Or run it in the box (Part 5).
-6. Review: `.factory/adapters/claude/review.sh specs/<nnn-feature>`
-   (read-only reviewer; add `--model opus` for risky areas). Commit
-   `review.md`. On CHANGES NEEDED, the implementer fixes and you review
-   again; after 3 rounds, you decide.
+6. Review with the read-only reviewer, one of two ways:
+   - **In Claude:** push the branch, open a draft PR, then type
+     `/review-pr <PR number>` (add `--model opus` for risky areas). It
+     checks that your checkout is that PR, runs the reviewer and reports
+     the findings.
+   - **In the terminal:** `.factory/adapters/claude/review.sh specs/<nnn-feature>`.
+
+   Commit `review.md`. On CHANGES NEEDED, the implementer fixes and you
+   review again; after 3 rounds, you decide (only you can run
+   `review.sh --another-round`).
 7. Your checks: the human tasks in `tasks.md` (play tests, checks by eye).
 8. Push, open the PR. CI's review gate passes only with an approved review
    of exactly this code and every task ticked. Read every line, merge.
@@ -287,6 +294,8 @@ default (Opus) for features (from the factory's experiments, M11 and M12).
     from `.factory/templates/brain/docs/brain/standards/`, move your rules
     from `conventions.md` into them with IDs, and delete `conventions.md`.
     Copy `decisions/README.md` too, and copy the agents again.
+  - **From kit 0.17.0:** the `/review-pr` command. Copy it once:
+    `mkdir -p .claude/skills && cp -R .factory/adapters/claude/skills/. .claude/skills/`.
 - **Change a standard or an ADR** through a pull request, never inside a
   feature's code change. Small change: edit in place. A real change of a
   decision: a new ADR that replaces the old one
@@ -324,6 +333,7 @@ default (Opus) for features (from the factory's experiments, M11 and M12).
 claude-agent                                           # a session with the agent token
 claude-agent --agent implementer                       # the builder role
 .factory/adapters/claude/review.sh specs/<feature>     # the read-only reviewer
+/review-pr <PR number>                                 # the same, from inside Claude
 scripts/check.sh                                       # everything must pass
 .factory/usage/report.sh                               # what agents cost, what's unfilled
 # The box:
