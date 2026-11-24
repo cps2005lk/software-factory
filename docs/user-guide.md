@@ -294,10 +294,10 @@ default (Opus) for features (from the factory's experiments, M11 and M12).
     from `.factory/templates/brain/docs/brain/standards/`, move your rules
     from `conventions.md` into them with IDs, and delete `conventions.md`.
     Copy `decisions/README.md` too, and copy the agents again.
-  - **From kit 0.18.0:** the Stop hook. Copy `settings.json` again (or
-    merge its new `Stop` part into yours); `scripts/check.sh` tells you.
   - **From kit 0.17.0:** the `/review-pr` command. Copy it once:
     `mkdir -p .claude/skills && cp -R .factory/adapters/claude/skills/. .claude/skills/`.
+  - **From kit 0.18.0:** the Stop hook. Copy `settings.json` again (or
+    merge its new `Stop` part into yours); `scripts/check.sh` tells you.
 - **Change a standard or an ADR** through a pull request, never inside a
   feature's code change. Small change: edit in place. A real change of a
   decision: a new ADR that replaces the old one
