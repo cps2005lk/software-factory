@@ -294,6 +294,8 @@ default (Opus) for features (from the factory's experiments, M11 and M12).
     from `.factory/templates/brain/docs/brain/standards/`, move your rules
     from `conventions.md` into them with IDs, and delete `conventions.md`.
     Copy `decisions/README.md` too, and copy the agents again.
+  - **From kit 0.18.0:** the Stop hook. Copy `settings.json` again (or
+    merge its new `Stop` part into yours); `scripts/check.sh` tells you.
   - **From kit 0.17.0:** the `/review-pr` command. Copy it once:
     `mkdir -p .claude/skills && cp -R .factory/adapters/claude/skills/. .claude/skills/`.
 - **Change a standard or an ADR** through a pull request, never inside a
@@ -315,6 +317,7 @@ default (Opus) for features (from the factory's experiments, M11 and M12).
 | "factory: risky-command: blocked" | A guard stopped the agent | Good. Read the reason; don't work around it |
 | A permission prompt about "your full login" | A GitHub write in a session without the agent token | Say yes only if *you* meant it; next time start with `claude-agent` |
 | "you are on 'main'. Make a branch first" | The git hook works | Make a branch |
+| "factory stop-check: before you stop, there is unfinished work" | The Stop hook sent the agent back once: uncommitted changes, commits on `main`, or failing checks | Let it finish. If the changes are yours, say so; the second stop is always allowed |
 | "missing or edited in .claude/settings.json" | The project's copy drifted from the kit | Copy `.factory/adapters/claude/settings.json` again |
 | `review-gate: … the review does not approve` / `tasks not done` | CI wants a current, approved review and every task ticked | Run `review.sh` again; finish or tick the tasks |
 | "install: uncommitted changes" | The install wants a clean start | Commit or stash first |
