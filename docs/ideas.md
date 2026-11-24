@@ -53,7 +53,7 @@ Status: `idea` → `next` → `doing` → `done` (with the PR link) or `dropped`
 
 | # | Idea | Why (principle) | Seen in | Effort | Status |
 | --- | --- | --- | --- | --- | --- |
-| 1 | **Stop hook:** the agent can't end its turn with uncommitted work, a failing `check.sh`, or commits on `main` that no remote has. It is sent back once, with the reason. | 12 Layer the locks | Team A | S | idea |
+| 1 | **Stop hook:** the agent can't end its turn with uncommitted work, a failing `check.sh`, or commits on `main` that no remote has. It is sent back once, with the reason. | 12 Layer the locks | Team A | S | done ([#24](https://github.com/cps2005lk/software-factory/pull/24)) |
 | 2 | **Requirement IDs from spec to review gate.** Each spec scenario gets an ID (`AC-1`). Tasks and `review.md` name it. The review gate fails if an ID has no proof. | 21 A tick is a claim | Team B | M | idea |
 | 3 | **Plan reviewer role,** before any code, in a separate agent. Fixed verdicts: endorse / endorse with conditions / revise / stand down. Numbered objections, each with an alternative. Advisory only. | Review on paper first | Team A | M | idea |
 | 4 | **PR template:** what changes, why, risk, proof (Red commit, checks), what was not checked. Most important first, short lines. | 21 A tick is a claim | Teams A and B | S | idea |
