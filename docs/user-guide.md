@@ -39,6 +39,30 @@ that matter most: a written rule asks, a check refuses; files are the truth,
 not memory; every claim needs proof; nobody grades their own work; match the
 weight of the process to the risk.
 
+### Three ways to start Claude
+
+Each limits something different. Pick by one question: is anyone watching?
+
+| | Plain `claude` | `claude-agent` | The box (`run.sh task`) |
+| --- | --- | --- | --- |
+| **GitHub rights** | Yours, full | The agent token: only the chosen repos, code and pull requests; no settings, CI or admin | The agent token |
+| **Your Mac** | Everything | Still everything: your home folder, `~/.ssh`, other projects, any website | Nothing: a fresh clone, no keychain, a firewall (Claude's API, GitHub, npm only) |
+| **Who is watching** | You | You: prompts come to you, the agent hook blocks risky commands | Nobody |
+| **Needs Docker** | No | No | Yes (Docker Desktop running) |
+| **Use it for** | Things only *you* may do, like repo settings | Everyday agent work | Unattended runs |
+
+- You're watching → `claude-agent`. Nobody is watching → the box. Your own
+  rights → plain `claude`.
+- `claude-agent` doesn't need the box: it is normal Claude on your Mac, with
+  the limited token from the keychain (Part 1, step 5).
+- Why both: a token limits what the agent can do on GitHub, not on your Mac.
+  When you watch, you and the agent hook cover the rest. When nobody
+  watches, words in a hook can be phrased around; a secret that isn't in the
+  box can't be reached (principle 3: the box decides, not the words).
+- .NET comparison: `claude-agent` is like running an app under a
+  low-privilege service account on your server; the box is like running it
+  in a container on an isolated network.
+
 ## Part 1: Set up your Mac (once)
 
 1. **Install the tools.**
