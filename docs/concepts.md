@@ -92,6 +92,8 @@ Updated at the end of every milestone.
 | Hidden tests | A known answer for builders: acceptance tests the implementer never sees, so it meets the spec, not the tests | [M12](learning-notes.md#m12-which-model-should-implement) |
 | Test the agent's tests | Run the agent's own tests against the same broken versions; strong tests catch them all | [M12](learning-notes.md#m12-which-model-should-implement) |
 | Yardstick in the prompt | The reviewer gets the project's standards from the script, every time, and names each broken rule by its ID | [Standards](learning-notes.md#after-m12-project-standards) |
+| Verdict check | The script turns an APPROVE into CHANGES NEEDED when a finding names a `must` rule or an accepted ADR: severity drifts, a rule ID in a finding is a fact | [Standards](learning-notes.md#after-m12-project-standards) |
+| List vs content | Given a list of ADRs, the reviewer opened none; content in the prompt is read, a list is a request | [Standards](learning-notes.md#after-m12-project-standards) |
 | Use the built-ins | Claude Code has subagents, agent teams, worktrees and routines; build rules and proof on top, not a fleet of your own | [Standards](learning-notes.md#after-m12-project-standards) |
 | Human as orchestrator | In the kit a person starts each role and reads each handoff; scripts do fixed steps, checks refuse | [Standards](learning-notes.md#after-m12-project-standards) |
 
