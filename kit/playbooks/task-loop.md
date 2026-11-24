@@ -117,7 +117,7 @@ maker-checker in a bank or a required reviewer on a pull request.
 | | Implementer | Reviewer |
 | --- | --- | --- |
 | File | `.claude/agents/implementer.md` | `.claude/agents/reviewer.md` |
-| Started by | A human: `claude --agent implementer` | A human: `.factory/adapters/claude/review.sh specs/<feature>` |
+| Started by | A human: `claude --agent implementer` | A human: `.factory/adapters/claude/review.sh specs/<feature>`, or `/review-pr <PR number>` in Claude |
 | Tools | All, behind the agent hook | Read, Grep, Glob only (no shell, no edits) |
 | Gets | The feature files, the standards, the accepted ADRs and the repo | A fixed prompt from the script: the standards and accepted ADRs in full, feature files, commits with their files, the diff, the check output |
 | Writes | Code and tests: a `Red:` commit with tests only, then `Green:` | Nothing. The script writes `specs/<feature>/review.md` |
@@ -161,6 +161,13 @@ both roles.
    Or by PR number: `review-pr.sh <N>` finds the PR's spec folder and base
    branch, checks that the checkout is that PR (same branch, same last
    commit as on GitHub), then runs `review.sh`. It never switches branches.
+   In Claude, the human types `/review-pr <N>`: the skill runs
+   `review-pr.sh` and reports the findings. Only a human can start it
+   (`disable-model-invocation`). It is not called `/review`, because that is
+   the alias of Claude Code's built-in `/code-review`, and a project skill
+   doesn't replace an alias ([skills](https://code.claude.com/docs/en/skills),
+   checked 2026-11-24). Copy it from `.factory/adapters/claude/skills/` to
+   `.claude/skills/`, like the agents.
 3. The verdict is the last line: `Verdict: APPROVE` (exit 0) or
    `Verdict: CHANGES NEEDED` (exit 1). No verdict means the review is not
    complete (exit 2).
